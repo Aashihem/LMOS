@@ -3,48 +3,55 @@ import { Clock, Check, AlertTriangle } from 'lucide-react';
 
 export default function ExperimentsPage({ navigateTo }) {
   // Mock data for experiments
-  const experiments = [
+  const [experiments, setExperiments] = useState([
     {
       id: 1,
       title: "Experiment 1: Ohm's Law Verification",
       description: "Verify Ohm's Law by measuring voltage and current across a resistor.",
       dueDate: "2024-07-10",
-      status: "Done"
+      status: "Pending" // Default status is "Pending"
     },
     {
       id: 2,
       title: "Experiment 2: Series and Parallel Circuits",
       description: "Study the behavior of resistors in series and parallel configurations.",
       dueDate: "2024-07-17",
-      status: "Done"
+      status: "Pending"
     },
     {
       id: 3,
       title: "Experiment 3: Capacitor Charging and Discharging",
       description: "Observe the charging and discharging curves of a capacitor.",
       dueDate: "2024-07-24",
-      status: "Done"
+      status: "Pending"
     },
     {
       id: 4,
       title: "Experiment 4: Transistor as a Switch",
       description: "Use a transistor to switch a load on and off.",
       dueDate: "2024-07-31",
-      status: "Done"
+      status: "Pending"
     },
     {
       id: 5,
       title: "Experiment 5: Diode Characteristics",
       description: "Study the forward and reverse bias characteristics of a diode.",
       dueDate: "2024-08-07",
-      status: "Done"
+      status: "Pending"
     },
-  ];
+  ]);
 
-  // State for filter
-  const [statusFilter, setStatusFilter] = useState('all');
+  // Function to update the status of an experiment
+  const updateExperimentStatus = (id, newStatus) => {
+    setExperiments((prevExperiments) =>
+      prevExperiments.map((exp) =>
+        exp.id === id ? { ...exp, status: newStatus } : exp
+      )
+    );
+  };
 
   // Filter experiments based on status
+  const [statusFilter, setStatusFilter] = useState('all');
   const filteredExperiments = statusFilter === 'all' 
     ? experiments 
     : experiments.filter(exp => exp.status.toLowerCase() === statusFilter.toLowerCase());
@@ -120,7 +127,7 @@ export default function ExperimentsPage({ navigateTo }) {
             <div 
               key={experiment.id} 
               className="bg-[#1e293b] border border-[#334155] rounded-md p-4 hover:border-blue-500/50 transition-colors cursor-pointer"
-              onClick={() => navigateTo('ExperimentDetail', experiment.id)}
+              onClick={() => navigateTo('ExperimentDetail', experiment.id, updateExperimentStatus)}
             >
               <h3 className="text-lg font-semibold">{experiment.title}</h3>
               <p className="text-gray-300 mb-3">{experiment.description}</p>
