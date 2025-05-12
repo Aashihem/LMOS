@@ -1,5 +1,6 @@
 // App.js
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import PageContainer from './components/PageContainer';
 
@@ -10,8 +11,9 @@ import IssueReportingPage from './pages/IssueReportingPage';
 import EquipmentManualsPage from './pages/EquipmentManualsPage';
 import EquipmentIdentificationPage from './pages/EquipmentIdentificationPage';
 import ExperimentsPage from './pages/ExperimentsPage';
-import ExperimentDetail from './pages/ExperimentDetail'; // New import
+import ExperimentDetail from './pages/ExperimentDetail';
 import ProfileSettingsPage from './pages/ProfileSettingsPage';
+import LoginPage from './pages/LoginPage'; // Import LoginPage
 
 // Import custom fonts
 const fontImport = `
@@ -19,8 +21,25 @@ const fontImport = `
 `;
 
 export default function LMOSApp() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login state
   const [activePage, setActivePage] = useState("Dashboard");
   const [experimentId, setExperimentId] = useState(null); // Store experiment ID for detail page
+
+  useEffect(() => {
+    // Check login state from localStorage
+    const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    setIsLoggedIn(loggedIn);
+  }, []);
+
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+    localStorage.setItem('isLoggedIn', 'true');
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    localStorage.removeItem('isLoggedIn');
+  };
 
   const navigateTo = (page, id = null) => {
     setActivePage(page);
@@ -41,7 +60,6 @@ export default function LMOSApp() {
         return <EquipmentIdentificationPage />;
       case "Experiments":
         return <ExperimentsPage navigateTo={navigateTo} />;
-        
       case "ExperimentDetail":
         return <ExperimentDetail experimentId={experimentId} navigateTo={navigateTo} />;
       case "Profile & Settings":
@@ -52,17 +70,39 @@ export default function LMOSApp() {
   };
 
   return (
-    <div className="flex h-screen bg-[#0f172a]" style={{ fontFamily: 'Inter, sans-serif' }}>
-      {/* Add global styles */}
-      <style dangerouslySetInnerHTML={{ __html: fontImport }} />
-      
-      {/* Sidebar Component */}
-      <Sidebar activePage={activePage} navigateTo={navigateTo} />
+    <Router>
+      <div className="flex h-screen bg-[#0f172a]" style={{ fontFamily: 'Inter, sans-serif' }}>
+        {/* Add global styles */}
+        <style dangerouslySetInnerHTML={{ __html: fontImport }} />
 
-      {/* Main Content */}
-      <PageContainer>
-        {renderPage()}
-      </PageContainer>
-    </div>
+        <Routes>
+          {/* Login Route */}
+          <Route
+            path="/login"
+            element={<LoginPage onLogin={handleLogin} />}
+          />
+
+          {/* Protected Routes */}
+          <Route
+            path="/*"
+            element={
+              isLoggedIn ? (
+                <>
+                  {/* Sidebar Component */}
+                  <Sidebar activePage={activePage} navigateTo={navigateTo} />
+
+                  {/* Main Content */}
+                  <PageContainer>
+                    {renderPage()}
+                  </PageContainer>
+                </>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+        </Routes>
+      </div>
+    </Router>
   );
 }

@@ -1,10 +1,12 @@
 // components/Sidebar.js
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { ChevronLeft, Settings, AlertTriangle, BookOpen, Calendar, BarChart2, Search, Beaker, LogOut, Menu } from 'lucide-react';
 
 export default function Sidebar({ activePage, navigateTo, children }) {
   const [collapsed, setCollapsed] = useState(false);
   const [sidebarVisible, setSidebarVisible] = useState(true); // For mobile view
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const toggleSidebar = () => {
     setCollapsed(!collapsed);
@@ -12,6 +14,11 @@ export default function Sidebar({ activePage, navigateTo, children }) {
 
   const toggleSidebarVisibility = () => {
     setSidebarVisible(!sidebarVisible);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('isLoggedIn'); // Clear login state
+    navigate('/login'); // Redirect to login page
   };
 
   const menuItems = [
@@ -74,7 +81,10 @@ export default function Sidebar({ activePage, navigateTo, children }) {
 
         {/* Logout Button */}
         <div className="px-4 py-3 border-t border-[#334155]">
-          <button className="flex items-center gap-2 text-black-600 font-semibold text-sm select-none focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-red-600">
+          <button
+            onClick={handleLogout} // Call handleLogout on click
+            className="flex items-center gap-2 text-red-600 font-semibold text-sm select-none focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-red-600"
+          >
             <LogOut size={20} />
             {!collapsed && <span>Logout</span>}
           </button>
