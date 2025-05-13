@@ -1,11 +1,47 @@
 import { useState } from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 
 export default function EquipmentReservationPage() {
   const [filter, setFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
+  const [reservationRequests, setReservationRequests] = useState([
+    {
+      id: 1,
+      equipment: 'Digital Oscilloscope Model DS1',
+      startDateTime: '5/13/2025, 10:00 AM',
+      endDateTime: '5/13/2025, 12:00 PM',
+      status: 'Pending',
+    },
+    {
+      id: 2,
+      equipment: 'Function Generator Model FG1',
+      startDateTime: '5/14/2025, 02:00 PM',
+      endDateTime: '5/14/2025, 04:00 PM',
+      status: 'Pending',
+    },
+    {
+      id: 3,
+      equipment: 'Power Supply Model PS1',
+      startDateTime: '5/15/2025, 09:00 AM',
+      endDateTime: '5/15/2025, 11:00 AM',
+      status: 'Pending',
+    },
+    {
+      id: 4,
+      equipment: 'DMM Model M123',
+      startDateTime: '5/16/2025, 01:00 PM',
+      endDateTime: '5/16/2025, 03:00 PM',
+      status: 'Pending',
+    },
+  ]);
 
-  // Mock data for available equipment
+  const [newReservation, setNewReservation] = useState({
+    equipment: '',
+    startDateTime: '',
+    endDateTime: '',
+  });
+
   const availableEquipment = [
     { id: 'EQP-1004', name: 'Digital Oscilloscope Model DS1', type: 'Oscilloscope', availability: 'Available' },
     { id: 'EQP-1008', name: 'Spectrum Analyzer Model SA1', type: 'Spectrum Analyzer', availability: 'Available' },
@@ -18,64 +54,48 @@ export default function EquipmentReservationPage() {
     { id: 'EQP-1036', name: 'DMM Model M456', type: 'DMM', availability: 'Available' },
     { id: 'EQP-1040', name: 'Oscilloscope Model OS2', type: 'Oscilloscope', availability: 'Available' },
     { id: 'EQP-1044', name: 'Function Generator Model FG3', type: 'Function Generator', availability: 'Available' },
-    { id: 'EQP-1048', name: 'Spectrum Analyzer Model SA3', type: 'Spectrum Analyzer', availability: 'Available' }
+    { id: 'EQP-1048', name: 'Spectrum Analyzer Model SA3', type: 'Spectrum Analyzer', availability: 'Available' },
   ];
 
-  // Mock data for user's reservation requests
-  const reservationRequests = [
-    { 
-      id: 1, 
-      equipment: 'Digital Oscilloscope Model DS1', 
-      startDateTime: '5/13/2025, 10:00 AM', 
-      endDateTime: '5/13/2025, 12:00 PM', 
-      status: 'Pending' 
-    },
-    { 
-      id: 2, 
-      equipment: 'Function Generator Model FG1', 
-      startDateTime: '5/14/2025, 02:00 PM', 
-      endDateTime: '5/14/2025, 04:00 PM', 
-      status: 'Pending' 
-    },
-    { 
-      id: 3, 
-      equipment: 'Power Supply Model PS1', 
-      startDateTime: '5/15/2025, 09:00 AM', 
-      endDateTime: '5/15/2025, 11:00 AM', 
-      status: 'Pending' 
-    },
-    { 
-      id: 4, 
-      equipment: 'DMM Model M123', 
-      startDateTime: '5/16/2025, 01:00 PM', 
-      endDateTime: '5/16/2025, 03:00 PM', 
-      status: 'Pending' 
-    }
-  ];
-
-  const filteredEquipment = availableEquipment.filter(item => 
-    item.name.toLowerCase().includes(filter.toLowerCase()) || 
+  const filteredEquipment = availableEquipment.filter((item) =>
+    item.name.toLowerCase().includes(filter.toLowerCase()) ||
     item.id.toLowerCase().includes(filter.toLowerCase())
   );
 
-  const filteredReservations = statusFilter === 'all' 
-    ? reservationRequests 
-    : reservationRequests.filter(req => req.status.toLowerCase() === statusFilter.toLowerCase());
+  const filteredReservations =
+    statusFilter === 'all'
+      ? reservationRequests
+      : reservationRequests.filter((req) => req.status.toLowerCase() === statusFilter.toLowerCase());
+
+  const handleNewReservationSubmit = (e) => {
+    e.preventDefault();
+    const newReservationWithId = {
+      ...newReservation,
+      id: reservationRequests.length + 1, // Generate a new ID
+      status: 'Pending',
+    };
+    setReservationRequests([...reservationRequests, newReservationWithId]);
+    setIsModalOpen(false); // Close the modal
+    setNewReservation({ equipment: '', startDateTime: '', endDateTime: '' }); // Reset the form
+  };
 
   return (
     <div className="text-white">
       <h1 className="text-2xl font-bold mb-6">Equipment Reservation</h1>
-      
+
       {/* Available Equipment Section */}
       <div className="mb-10">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Available Equipment</h2>
-          <button className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded flex items-center gap-2 transition-colors">
+          <button
+            className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded flex items-center gap-2 transition-colors"
+            onClick={() => setIsModalOpen(true)} // Open the modal
+          >
             <Plus size={18} />
             <span>Request Reservation</span>
           </button>
         </div>
-        
+
         {/* Search bar */}
         <div className="mb-4">
           <input
@@ -86,10 +106,10 @@ export default function EquipmentReservationPage() {
             onChange={(e) => setFilter(e.target.value)}
           />
         </div>
-        
+
         {/* Equipment table */}
         <div className="bg-[#1e293b] rounded-md overflow-hidden">
-          <div className="overflow-x-auto"> {/* Added horizontal scroll */}
+          <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-[#334155] text-left text-sm uppercase font-semibold">
@@ -113,14 +133,14 @@ export default function EquipmentReservationPage() {
           </div>
         </div>
       </div>
-      
+
       {/* Your Reservation Requests Section */}
       <div>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Your Reservation Requests</h2>
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-400">Filter by status:</span>
-            <select 
+            <select
               className="bg-[#1e293b] border border-[#334155] rounded p-1 text-sm focus:outline-none focus:border-blue-500"
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
@@ -132,10 +152,10 @@ export default function EquipmentReservationPage() {
             </select>
           </div>
         </div>
-        
+
         {/* Reservations table */}
         <div className="bg-[#1e293b] rounded-md overflow-hidden">
-          <div className="overflow-x-auto"> {/* Added horizontal scroll */}
+          <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-[#334155] text-left text-sm uppercase font-semibold">
@@ -163,6 +183,73 @@ export default function EquipmentReservationPage() {
           </div>
         </div>
       </div>
+
+      {/* Reservation Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-[#1e293b] p-6 rounded-lg shadow-lg w-full max-w-md">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold text-white">Request New Reservation</h2>
+              <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-200">
+                <X size={20} />
+              </button>
+            </div>
+            <form onSubmit={handleNewReservationSubmit}>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-400">Equipment</label>
+                <select
+                  value={newReservation.equipment}
+                  onChange={(e) => setNewReservation({ ...newReservation, equipment: e.target.value })}
+                  className="w-full p-2 rounded bg-[#334155] text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                >
+                  <option value="">Select Equipment</option>
+                  {availableEquipment.map((item) => (
+                    <option key={item.id} value={item.name}>
+                      {item.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-400">Start Date & Time</label>
+                <input
+                  type="datetime-local"
+                  value={newReservation.startDateTime}
+                  onChange={(e) => setNewReservation({ ...newReservation, startDateTime: e.target.value })}
+                  className="w-full p-2 rounded bg-[#334155] text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-400">End Date & Time</label>
+                <input
+                  type="datetime-local"
+                  value={newReservation.endDateTime}
+                  onChange={(e) => setNewReservation({ ...newReservation, endDateTime: e.target.value })}
+                  className="w-full p-2 rounded bg-[#334155] text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded mr-2"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded"
+                >
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
