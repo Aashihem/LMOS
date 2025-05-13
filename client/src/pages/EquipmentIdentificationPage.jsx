@@ -27,15 +27,41 @@ export default function EquipmentIdentificationPage() {
     setIdentifyMode(false);
   };
 
-  const handleCaptureImage = (imageData) => {
-    setCapturedImage(imageData);
-    setIdentifyMode(false);
+const handleCaptureImage = async (imageData) => {
+  setCapturedImage(imageData);
+  setIdentifyMode(false);
 
-    // Simulate API
-    setTimeout(() => {
-      setApiOutputImage(imageData); // Mock API output same as input
-    }, 2000);
-  };
+  try {
+    // Convert base64 image to a Blob
+    const blob = await fetch(imageData).then((res) => res.blob());
+
+    // Create a FormData object
+    const formData = new FormData();
+    formData.append("file", blob, "captured_image.jpg");
+
+    // Send the image to the backend
+    const response = await fetch("http://127.0.0.1:8000/process-image/", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const processedImageHex = data.processed_image;
+
+      // Convert hex to base64
+      const processedImageBase64 = `data:image/jpeg;base64,${btoa(
+        processedImageHex.match(/\w{2}/g).map((byte) => String.fromCharCode(parseInt(byte, 16))).join("")
+      )}`;
+
+      setApiOutputImage(processedImageBase64);
+    } else {
+      console.error("Failed to process image");
+    }
+  } catch (err) {
+    console.error("Error processing image:", err);
+  }
+};
 
   return (
     <div className="text-white">

@@ -1,72 +1,67 @@
 // pages/ProfileSettingsPage.js
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ProfileHeader from '../components/profile/ProfileHeader';
 import ProfileStats from '../components/profile/ProfileStats';
 import ExperimentMarks from '../components/profile/ExperimentMarks';
 
 export default function ProfileSettingsPage() {
-  // Mock student data
-  const studentData = {
-    name: "Aashi Hemnani",
-    uid: "2022200049",
-    experimentMarks: [
-      { id: 1, name: "Experiment 1", marks: 85 },
-      { id: 2, name: "Experiment 2", marks: 90 },
-      { id: 3, name: "Experiment 3", marks: 88 },
-      { id: 4, name: "Experiment 4", marks: 92 },
-      { id: 5, name: "Experiment 5", marks: 87 },
-      { id: 6, name: "Experiment 6", marks: 91 },
-      { id: 7, name: "Experiment 7", marks: 89 },
-      { id: 8, name: "Experiment 8", marks: 93 },
-      { id: 9, name: "Experiment 9", marks: 90 },
-      { id: 10, name: "Experiment 10", marks: 94 }
-    ],
-    attendance: [
-      {
-        month: "February",
-        sessions: [
-          { date: "2025-02-02", status: "Present" },
-          { date: "2025-02-09", status: "Absent" },
-          { date: "2025-02-16", status: "Present" },
-          { date: "2025-02-23", status: "Present" }
-        ]
-      },
-      {
-        month: "March",
-        sessions: [
-          { date: "2025-03-02", status: "Present" },
-          { date: "2025-03-09", status: "Present" },
-          { date: "2025-03-16", status: "Absent" },
-          { date: "2025-03-23", status: "Present" },
-          { date: "2025-03-30", status: "Present" }
-        ]
-      },
-      {
-        month: "April",
-        sessions: [
-          { date: "2025-04-06", status: "Absent" },
-          { date: "2025-04-13", status: "Present" },
-          { date: "2025-04-20", status: "Present" },
-          { date: "2025-04-27", status: "Absent" }
-        ]
-      },
-      {
-        month: "May",
-        sessions: [
-          { date: "2025-05-04", status: "Present" },
-          { date: "2025-05-11", status: "Present" },
-          { date: "2025-05-18", status: "Absent" },
-          { date: "2025-05-25", status: "Present" }
-        ]
-      }
-    ],
-    issues: [
-      { id: 1, description: "Lab equipment malfunction", status: "Resolved" },
-      { id: 2, description: "Experiment instructions unclear", status: "Pending" }
-    ]
-  };
-
+  const [studentData, setStudentData] = useState(null);
   const [activeTab, setActiveTab] = useState('marks');
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const username = localStorage.getItem('username'); // Assuming username is stored in localStorage
+        const response = await fetch(`http://127.0.0.1:8000/profile/${username}`);
+        if (response.ok) {
+          const data = await response.json();
+
+          console.log('Profile data:', data);
+          setStudentData({
+            ...data,
+            experimentMarks: [
+              { id: 1, name: "Experiment 1", marks: 85 },
+              { id: 2, name: "Experiment 2", marks: 90 },
+              { id: 3, name: "Experiment 3", marks: 88 },
+              { id: 4, name: "Experiment 4", marks: 92 },
+              { id: 5, name: "Experiment 5", marks: 87 },
+              { id: 6, name: "Experiment 6", marks: 91 },
+              { id: 7, name: "Experiment 7", marks: 89 },
+              { id: 8, name: "Experiment 8", marks: 93 },
+              { id: 9, name: "Experiment 9", marks: 90 },
+              { id: 10, name: "Experiment 10", marks: 94 }
+            ],
+            attendance: [
+              {
+                month: "February",
+                sessions: [
+                  { date: "2025-02-02", status: "Present" },
+                  { date: "2025-02-09", status: "Absent" },
+                  { date: "2025-02-16", status: "Present" },
+                  { date: "2025-02-23", status: "Present" }
+                ]
+              },
+              // Add more mock attendance data here
+            ],
+            issues: [
+              { id: 1, description: "Lab equipment malfunction", status: "Resolved" },
+              { id: 2, description: "Experiment instructions unclear", status: "Pending" }
+            ]
+          });
+        } else {
+          console.error('Failed to fetch profile data');
+        }
+      } catch (err) {
+        console.error('Error fetching profile:', err);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  if (!studentData) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="max-w-7xl mx-auto text-white">
