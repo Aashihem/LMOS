@@ -7,17 +7,36 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
-    e.preventDefault();
+const handleLogin = async (e) => {
+  e.preventDefault();
+  setError('');
 
-    if (username === 'student' && password === 'student@111') {
-      localStorage.setItem('isLoggedIn', 'true');
-      console.log('Login successful');
-      navigate('/dashboard');
+  try {
+    const response = await fetch('http://127.0.0.1:8000/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: username,
+        password: password,
+      }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log('Login successful:', data);
+      localStorage.setItem('isLoggedIn', 'true'); // Store login state
+      navigate('/dashboard'); // Redirect to the dashboard
     } else {
-      setError('Invalid username or password');
+      const errorData = await response.json();
+      setError(errorData.detail || 'Invalid username or password');
     }
-  };
+  } catch (err) {
+    console.error('Login failed:', err);
+    setError('Server error. Please try again later.');
+  }
+};
 
   return (
     <div

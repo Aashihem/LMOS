@@ -106,36 +106,3 @@ export default function LMOSApp() {
     </Router>
   );
 }
-
-
-
-
-
-
-
-
-// import React from 'react';
-// import axios from 'axios';
-
-// export default function TestApiCaller() {
-  
-//   const callApi = async () => {
-//     try {
-//       const response = await axios.get('http://localhost:8001/api/hello');
-//       console.log('✅ API Response:', response.data);
-//     } catch (error) {
-//       console.error('❌ Error calling API:', error);
-//     }
-//   };
-
-//   return (
-//     <div className="flex flex-col items-center justify-center h-screen bg-gray-900 text-white">
-//       <button 
-//         onClick={callApi}
-//         className="bg-gradient-to-r from-purple-500 to-pink-500 px-4 py-2 rounded-md text-lg font-semibold"
-//       >
-//         Call API
-//       </button>
-//     </div>
-//   );
-// }
