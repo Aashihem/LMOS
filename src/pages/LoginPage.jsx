@@ -10,8 +10,9 @@ export default function LoginPage() {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    if (username === 'student' && password === 'student') {
+    if (username === 'student' && password === 'student@111') {
       localStorage.setItem('isLoggedIn', 'true');
+      console.log('Login successful');
       navigate('/dashboard');
     } else {
       setError('Invalid username or password');
