@@ -2,9 +2,6 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from db import get_db
 from models import ReservationRequest
-
-router = APIRouter()
-
 @router.get("/reservations/{uid}")
 def get_reservations(uid: int, db: Session = Depends(get_db)):
     reservations = db.query(ReservationRequest).filter(ReservationRequest.uid == uid).all()
