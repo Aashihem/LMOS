@@ -8,8 +8,8 @@ export default defineConfig({
   server: {
     host: true, // Allows access from other devices
     port: 5173, // Optional: Specify the port
-    allowedHosts:['*']
+    // allowedHosts:['all'],
     // allowedHosts: ['1cc1-106-215-183-208.ngrok-free.app'],
-    // allowedHosts: ['07e4-2409-40c0-105e-afd5-514a-4a81-b457-7d2.ngrok-free.app'] // Add the host here
+     allowedHosts: ['5ede-2402-3a80-429d-7535-2d8a-66df-52ce-439e.ngrok-free.app', "http://127.0.0.1:8001/"] // Add the host here
   },
 })
