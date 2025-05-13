@@ -1,65 +1,34 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, X } from 'lucide-react';
 
 export default function EquipmentReservationPage() {
   const [filter, setFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
-  const [reservationRequests, setReservationRequests] = useState([
-    {
-      id: 1,
-      equipment: 'Digital Oscilloscope Model DS1',
-      startDateTime: '5/13/2025, 10:00 AM',
-      endDateTime: '5/13/2025, 12:00 PM',
-      status: 'Pending',
-    },
-    {
-      id: 2,
-      equipment: 'Function Generator Model FG1',
-      startDateTime: '5/14/2025, 02:00 PM',
-      endDateTime: '5/14/2025, 04:00 PM',
-      status: 'Pending',
-    },
-    {
-      id: 3,
-      equipment: 'Power Supply Model PS1',
-      startDateTime: '5/15/2025, 09:00 AM',
-      endDateTime: '5/15/2025, 11:00 AM',
-      status: 'Pending',
-    },
-    {
-      id: 4,
-      equipment: 'DMM Model M123',
-      startDateTime: '5/16/2025, 01:00 PM',
-      endDateTime: '5/16/2025, 03:00 PM',
-      status: 'Pending',
-    },
-  ]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [availableEquipment, setAvailableEquipment] = useState([]);
+  const [reservationRequests, setReservationRequests] = useState([]);
 
-  const [newReservation, setNewReservation] = useState({
-    equipment: '',
-    startDateTime: '',
-    endDateTime: '',
-  });
+  const uid = 1; // Replace with the logged-in user's UID
 
-  const availableEquipment = [
-    { id: 'EQP-1004', name: 'Digital Oscilloscope Model DS1', type: 'Oscilloscope', availability: 'Available' },
-    { id: 'EQP-1008', name: 'Spectrum Analyzer Model SA1', type: 'Spectrum Analyzer', availability: 'Available' },
-    { id: 'EQP-1012', name: 'Power Supply Model PS1', type: 'Power Supply', availability: 'Available' },
-    { id: 'EQP-1016', name: 'DMM Model M123', type: 'DMM', availability: 'Available' },
-    { id: 'EQP-1020', name: 'Function Generator Model FG1', type: 'Function Generator', availability: 'Available' },
-    { id: 'EQP-1024', name: 'Function Generator Model FG2', type: 'Function Generator', availability: 'Available' },
-    { id: 'EQP-1028', name: 'Spectrum Analyzer Model SA2', type: 'Spectrum Analyzer', availability: 'Available' },
-    { id: 'EQP-1032', name: 'Power Supply Model PS2', type: 'Power Supply', availability: 'Available' },
-    { id: 'EQP-1036', name: 'DMM Model M456', type: 'DMM', availability: 'Available' },
-    { id: 'EQP-1040', name: 'Oscilloscope Model OS2', type: 'Oscilloscope', availability: 'Available' },
-    { id: 'EQP-1044', name: 'Function Generator Model FG3', type: 'Function Generator', availability: 'Available' },
-    { id: 'EQP-1048', name: 'Spectrum Analyzer Model SA3', type: 'Spectrum Analyzer', availability: 'Available' },
-  ];
+  // Fetch equipment details
+  useEffect(() => {
+    fetch("http://localhost:8000/api/equipment")
+      .then((response) => response.json())
+      .then((data) => setAvailableEquipment(data))
+      .catch((error) => console.error("Error fetching equipment data:", error));
+  }, []);
+
+  // Fetch reservation requests
+  useEffect(() => {
+    fetch(`http://localhost:8000/api/reservations/${uid}`)
+      .then((response) => response.json())
+      .then((data) => setReservationRequests(data))
+      .catch((error) => console.error("Error fetching reservation data:", error));
+  }, [uid]);
 
   const filteredEquipment = availableEquipment.filter((item) =>
-    item.name.toLowerCase().includes(filter.toLowerCase()) ||
-    item.id.toLowerCase().includes(filter.toLowerCase())
+    item.equipment_name.toLowerCase().includes(filter.toLowerCase()) ||
+    item.equipment_id.toLowerCase().includes(filter.toLowerCase())
   );
 
   const filteredReservations =
@@ -113,19 +82,17 @@ export default function EquipmentReservationPage() {
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-[#334155] text-left text-sm uppercase font-semibold">
-                  <th className="px-4 py-3 text-gray-300">Item ID</th>
-                  <th className="px-4 py-3 text-gray-300">Name</th>
-                  <th className="px-4 py-3 text-gray-300">Type</th>
-                  <th className="px-4 py-3 text-gray-300">Availability</th>
+                  <th className="px-4 py-3 text-gray-300">Equipment ID</th>
+                  <th className="px-4 py-3 text-gray-300">Equipment Name</th>
+                  <th className="px-4 py-3 text-gray-300">Available Units</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredEquipment.map((item) => (
-                  <tr key={item.id} className="border-t border-[#334155] hover:bg-[#2d3748]">
-                    <td className="px-4 py-3 text-gray-300">{item.id}</td>
-                    <td className="px-4 py-3">{item.name}</td>
-                    <td className="px-4 py-3 text-gray-300">{item.type}</td>
-                    <td className="px-4 py-3 text-green-400">{item.availability}</td>
+                  <tr key={item.equipment_id} className="border-t border-[#334155] hover:bg-[#2d3748]">
+                    <td className="px-4 py-3 text-gray-300">{item.equipment_id}</td>
+                    <td className="px-4 py-3">{item.equipment_name}</td>
+                    <td className="px-4 py-3 text-green-400">{item.available_units}</td>
                   </tr>
                 ))}
               </tbody>

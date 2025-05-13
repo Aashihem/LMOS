@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 # Database URL (replace with your actual database credentials)
-DATABASE_URL = "mysql+pymysql://Soham:1234@localhost/lmos"
+DATABASE_URL = "mysql+pymysql://root:Saashi.123@localhost/lmos"
 
 # Create the SQLAlchemy engine
 engine = create_engine(DATABASE_URL)
