@@ -26,7 +26,12 @@ const handleLogin = async (e) => {
     if (response.ok) {
       const data = await response.json();
       console.log('Login successful:', data);
+
+      // Store username and login state in localStorage
+      localStorage.setItem('username', data.user.username); // Store the username
       localStorage.setItem('isLoggedIn', 'true'); // Store login state
+      
+      console.log('Navigating to /dashboard');
       navigate('/dashboard'); // Redirect to the dashboard
     } else {
       const errorData = await response.json();

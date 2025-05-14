@@ -4,6 +4,7 @@ from roboflow import Roboflow
 from PIL import Image, ImageDraw, ImageFont
 import io
 import time
+import os
 
 router = APIRouter()
 
@@ -12,6 +13,10 @@ rf = Roboflow(api_key="tl44hGdKoh1F94o5HO3g")  # Replace with your API key
 project = rf.project("electrocom-61")  # Replace with your project name
 model = project.version(4).model       # Replace with your model version
 
+# Create a folder for processed images if it doesn't exist
+PROCESSED_IMAGES_DIR = "processed_images"
+os.makedirs(PROCESSED_IMAGES_DIR, exist_ok=True)
+
 @router.post("/process-image/")
 async def process_image(file: UploadFile = File(...)):
     # Read the uploaded image
@@ -19,7 +24,7 @@ async def process_image(file: UploadFile = File(...)):
     image = Image.open(io.BytesIO(image_data)).convert("RGB")
 
     # Save the image temporarily
-    temp_image_path = f"temp_{time.time()}.jpg"
+    temp_image_path = f"{PROCESSED_IMAGES_DIR}/temp_{time.time()}.jpg"
     image.save(temp_image_path)
 
     # Run inference
@@ -46,8 +51,8 @@ async def process_image(file: UploadFile = File(...)):
         draw.rectangle([left, top, right, bottom], outline="red", width=2)
         draw.text((left, top - 10), f"{label} ({conf:.2f})", fill="red", font=font)
 
-    # Save the processed image
-    output_path = f"processed_{time.time()}.jpg"
+    # Save the processed image in the folder
+    output_path = f"{PROCESSED_IMAGES_DIR}/processed_{time.time()}.jpg"
     image.save(output_path)
 
     # Return the processed image as a response
