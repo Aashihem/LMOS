@@ -56,7 +56,6 @@ export default function ExperimentDetail({ experimentId, navigateTo, updateExper
         return 'text-gray-400';
     }
   };
-  
 
   const getStatusIcon = (status) => {
     switch (status?.toLowerCase()) {
@@ -72,86 +71,205 @@ export default function ExperimentDetail({ experimentId, navigateTo, updateExper
   };
 
   const handleSubmit = () => {
-  if (!uploadedFile) {
-    alert("Please upload a file before submitting.");
-    return;
-  }
+    if (!uploadedFile) {
+      alert("Please upload a file before submitting.");
+      return;
+    }
 
-  // Simulate file submission (you can replace this with an API call)
-  console.log(`Submitting file: ${uploadedFile.name} for experiment: ${experiment.title}`);
+    // Simulate file submission (you can replace this with an API call)
+    console.log(`Submitting file: ${uploadedFile.name} for experiment: ${experiment.title}`);
 
-  // Update the status of the experiment to "Done"
-  updateExperimentStatus(experimentId, "Done");
+    // Update the status of the experiment to "Done"
+    updateExperimentStatus(experimentId, "Done");
 
-  alert(`Submitted data for ${experiment.title} with file: ${uploadedFile.name}`);
+    alert(`Submitted data for ${experiment.title} with file: ${uploadedFile.name}`);
 
-  // Navigate back to the Experiments page
-  navigateTo('Experiments');
-};
+    // Navigate back to the Experiments page
+    navigateTo('Experiments');
+  };
+
   return (
-    <div className="text-white max-w-4xl mx-auto p-6">
-      {!experiment || !experiment.id ? (
-        <div className="text-center text-gray-400">Experiment not found</div>
-      ) : (
-        <>
-          <div className="mb-8">
-            <button
-              onClick={() => navigateTo('Experiments')}
-              className="flex items-center text-gray-300 hover:text-white transition-all duration-200 bg-[#1e293b] px-4 py-2 rounded-lg shadow-md hover:shadow-lg"
-            >
-              <ArrowLeft size={16} className="mr-2" />
-              Back to Experiments
-            </button>
+    <div
+      style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+        padding: '2rem',
+        fontFamily: 'system-ui, -apple-system, sans-serif',
+      }}
+    >
+      <div
+        style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          opacity: 1,
+          transform: 'translateY(0)',
+          transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+        }}
+      >
+        {!experiment || !experiment.id ? (
+          <div
+            style={{
+              textAlign: 'center',
+              color: '#94a3b8',
+              fontSize: '1.25rem',
+              fontWeight: '500',
+            }}
+          >
+            Experiment not found
           </div>
-
-          <div className="mb-12">
-            <h1 className="text-3xl font-bold mb-3 text-white tracking-tight">{experiment.title}</h1>
-            <p className="text-gray-300 text-lg leading-relaxed">{experiment.description}</p>
-          </div>
-
-          <div className="bg-[#1e293b] border border-[#334155] rounded-xl p-8 shadow-lg">
-            <h2 className="text-2xl font-semibold mb-4 text-white">Instructions</h2>
-            <pre className="text-gray-200 text-base leading-relaxed bg-[#0f172a] p-4 rounded-lg whitespace-pre-wrap">{experiment.instructions}</pre>
-
-            <div className="mt-8">
-              <h3 className="text-xl font-semibold mb-3 text-white">Upload Experiment File</h3>
-              <div className="flex items-center gap-4">
-                <input
-                  type="file"
-                  onChange={handleFileChange}
-                  className="text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-blue-600 file:text-white file:font-semibold hover:file:bg-blue-700 file:transition-all file:duration-200 file:cursor-pointer"
-                />
-                {uploadedFile && (
-                  <p className="text-gray-400 text-sm italic">Uploaded: {uploadedFile.name}</p>
-                )}
-              </div>
+        ) : (
+          <>
+            <div style={{ marginBottom: '2rem' }}>
+              <button
+                onClick={() => navigateTo('Experiments')}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  color: '#94a3b8',
+                  backgroundColor: '#1e293b',
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: '0.75rem',
+                  border: '1px solid #334155',
+                  fontWeight: '600',
+                  fontSize: '0.95rem',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                }}
+              >
+                <ArrowLeft size={16} style={{ marginRight: '0.5rem' }} />
+                Back to Experiments
+              </button>
             </div>
 
-            <div className="mt-8 flex flex-wrap justify-between items-center bg-[#0f172a] p-4 rounded-lg">
-              <div className="flex items-center gap-3 text-sm">
-                <span className="text-gray-400 font-medium">Due Date:</span>
-                <span className="text-gray-200">{formatDate(experiment.dueDate)}</span>
-              </div>
-              <div className={`flex items-center gap-2 ${getStatusColor(experiment.status)}`}>
-                {getStatusIcon(experiment.status)}
-                <span className="font-medium">Status: {experiment.status}</span>
-              </div>
+            <div style={{ marginBottom: '2rem' }}>
+              <h1
+                style={{
+                  fontSize: '2rem',
+                  fontWeight: '800',
+                  color: 'white',
+                  marginBottom: '1rem',
+                }}
+              >
+                {experiment.title}
+              </h1>
+              <p style={{ color: '#94a3b8', fontSize: '1rem', lineHeight: '1.5' }}>
+                {experiment.description}
+              </p>
             </div>
 
-            <button
-              onClick={handleSubmit}
-              className={`mt-8 px-6 py-2 rounded-lg font-semibold transition-all duration-200 shadow-md ${
-                experiment.status === "Done"
-                  ? "bg-gray-600 text-gray-300 cursor-not-allowed"
-                  : "bg-blue-600 text-white hover:bg-blue-700 hover:shadow-lg"
-              }`}
-              disabled={experiment.status === "Done"}
+            <div
+              style={{
+                backgroundColor: '#1e293b',
+                border: '1px solid #334155',
+                borderRadius: '0.75rem',
+                padding: '2rem',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+              }}
             >
-              Submit Experiment
-            </button>
-          </div>
-        </>
-      )}
+              <h2
+                style={{
+                  fontSize: '1.5rem',
+                  fontWeight: '700',
+                  color: 'white',
+                  marginBottom: '1rem',
+                }}
+              >
+                Instructions
+              </h2>
+              <pre
+                style={{
+                  color: '#94a3b8',
+                  backgroundColor: '#0f172a',
+                  padding: '1rem',
+                  borderRadius: '0.75rem',
+                  fontSize: '0.95rem',
+                  lineHeight: '1.5',
+                  whiteSpace: 'pre-wrap',
+                }}
+              >
+                {experiment.instructions}
+              </pre>
+
+              <div style={{ marginTop: '2rem' }}>
+                <h3
+                  style={{
+                    fontSize: '1.25rem',
+                    fontWeight: '700',
+                    color: 'white',
+                    marginBottom: '1rem',
+                  }}
+                >
+                  Upload Experiment File
+                </h3>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <input
+                    type="file"
+                    onChange={handleFileChange}
+                    style={{
+                      color: '#94a3b8',
+                      backgroundColor: '#1e293b',
+                      padding: '0.75rem',
+                      borderRadius: '0.75rem',
+                      border: '1px solid #334155',
+                      cursor: 'pointer',
+                    }}
+                  />
+                  {uploadedFile && (
+                    <p style={{ color: '#94a3b8', fontSize: '0.875rem' }}>
+                      Uploaded: {uploadedFile.name}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div
+                style={{
+                  marginTop: '2rem',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  backgroundColor: '#0f172a',
+                  padding: '1rem',
+                  borderRadius: '0.75rem',
+                }}
+              >
+                <div style={{ color: '#94a3b8', fontSize: '0.95rem' }}>
+                  <span style={{ fontWeight: '600' }}>Due Date:</span> {formatDate(experiment.dueDate)}
+                </div>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    color: getStatusColor(experiment.status),
+                  }}
+                >
+                  {getStatusIcon(experiment.status)}
+                  <span style={{ fontWeight: '600' }}>Status: {experiment.status}</span>
+                </div>
+              </div>
+
+              <button
+                onClick={handleSubmit}
+                style={{
+                  marginTop: '2rem',
+                  padding: '0.875rem 1.5rem',
+                  borderRadius: '0.75rem',
+                  fontWeight: '600',
+                  fontSize: '1rem',
+                  backgroundColor: experiment.status === 'Done' ? '#4b5563' : '#2563eb',
+                  color: experiment.status === 'Done' ? '#9ca3af' : 'white',
+                  cursor: experiment.status === 'Done' ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.3s ease',
+                }}
+                disabled={experiment.status === 'Done'}
+              >
+                Submit Experiment
+              </button>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }

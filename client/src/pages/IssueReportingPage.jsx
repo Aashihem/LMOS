@@ -1,4 +1,3 @@
-// pages/IssueReportingPage.js
 import { useState } from 'react';
 import { Plus, Search, X } from 'lucide-react';
 
@@ -39,7 +38,7 @@ export default function IssueReportingPage() {
       status: 'Open',
     },
   ]);
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [newIssue, setNewIssue] = useState({
     id: '',
     equipment: '',
@@ -98,182 +97,434 @@ export default function IssueReportingPage() {
   };
 
   return (
-    <div className="text-white">
-      <h1 className="text-2xl font-bold mb-6">Issue Reporting</h1>
-
-      {/* Action Bar */}
-      <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
-        <button
-          className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded flex items-center gap-2 transition-colors"
-          onClick={() => setIsModalOpen(true)} // Open the modal
+    <div
+      style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+        padding: '2rem',
+        fontFamily: 'system-ui, -apple-system, sans-serif',
+      }}
+    >
+      <div
+        style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          opacity: 1,
+          transform: 'translateY(0)',
+          transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '2rem',
+            position: 'relative',
+          }}
         >
-          <Plus size={18} />
-          <span>Report New Issue</span>
-        </button>
-
-        <div className="flex flex-wrap items-center gap-4">
-          {/* Search */}
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search by ID or equipment"
-              className="pl-10 pr-4 py-2 rounded bg-[#1e293b] border border-[#334155] focus:outline-none focus:border-blue-500"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <Search
-              size={18}
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-            />
-          </div>
-
-          {/* Status Filter */}
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-400">Filter by status:</span>
-            <select
-              className="bg-[#1e293b] border border-[#334155] rounded p-2 focus:outline-none focus:border-blue-500"
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-            >
-              <option value="all">All</option>
-              <option value="open">Open</option>
-              <option value="in progress">In Progress</option>
-              <option value="resolved">Resolved</option>
-            </select>
-          </div>
+          <h1
+            style={{
+              fontSize: '1.75rem',
+              fontWeight: '800',
+              lineHeight: '1.2',
+              maxWidth: '70%',
+              color: 'white',
+              background: 'linear-gradient(to right, #e2e8f0, #f8fafc)',
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+              textShadow: '0 0 30px rgba(59, 130, 246, 0.3)',
+            }}
+          >
+            Issue Reporting
+          </h1>
         </div>
-      </div>
 
-      {/* Issues Table */}
-      <div className="bg-[#1e293b] rounded-md overflow-hidden shadow">
-        <div className="overflow-x-auto">
-          {/* Added horizontal scroll */}
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="bg-[#334155] text-left text-sm uppercase font-semibold">
-                <th className="px-4 py-3 text-gray-300">Issue ID</th>
-                <th className="px-4 py-3 text-gray-300">Equipment</th>
-                <th className="px-4 py-3 text-gray-300">Lab</th>
-                <th className="px-4 py-3 text-gray-300">Issue Type</th>
-                <th className="px-4 py-3 text-gray-300">Report Date</th>
-                <th className="px-4 py-3 text-gray-300">Status</th>
-                <th className="px-4 py-3 text-gray-300">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredIssues.map((issue) => (
-                <tr
-                  key={issue.id}
-                  className="border-t border-[#334155] hover:bg-[#2d3748]"
-                >
-                  <td className="px-4 py-3 text-gray-300">{issue.id}</td>
-                  <td className="px-4 py-3">{issue.equipment}</td>
-                  <td className="px-4 py-3 text-gray-300">{issue.lab}</td>
-                  <td className="px-4 py-3 text-gray-300">{issue.issueType}</td>
-                  <td className="px-4 py-3 text-gray-300">{issue.reportDate}</td>
-                  <td className="px-4 py-3">
-                    <span
-                      className={`px-2 py-1 ${getStatusBadgeColor(
-                        issue.status
-                      )} rounded-full text-xs font-semibold`}
-                    >
-                      {issue.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <button className="text-blue-400 hover:text-blue-500 font-medium text-sm">
-                      View Details
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+        {/* Decorative top bar */}
+        <div
+          style={{
+            height: '4px',
+            background: 'linear-gradient(to right, #3b82f6, #8b5cf6)',
+            borderRadius: '4px',
+            marginBottom: '2rem',
+          }}
+        />
 
-      {/* No Results */}
-      {filteredIssues.length === 0 && (
-        <div className="text-center py-10 bg-[#1e293b] rounded-md mt-4">
-          <p className="text-gray-400">No issues found matching your filters.</p>
-        </div>
-      )}
+        {/* Action Bar */}
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '2rem',
+            gap: '1rem',
+          }}
+        >
+          <button
+            style={{
+              padding: '0.875rem 1.5rem',
+              borderRadius: '0.75rem',
+              backgroundColor: '#2563eb',
+              color: 'white',
+              fontWeight: '600',
+              fontSize: '0.95rem',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+            }}
+            onClick={() => setIsModalOpen(true)}
+          >
+            <Plus size={18} />
+            Report New Issue
+          </button>
 
-      {/* Modal for Reporting New Issue */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-[#1e293b] p-6 rounded-lg shadow-lg w-full max-w-md">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold text-white">Report New Issue</h2>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="text-gray-400 hover:text-gray-200"
-              >
-                <X size={20} />
-              </button>
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '1rem' }}>
+            {/* Search */}
+            <div style={{ position: 'relative' }}>
+              <input
+                type="text"
+                placeholder="Search by ID or equipment"
+                style={{
+                  width: '250px',
+                  padding: '0.875rem 1rem',
+                  paddingLeft: '2.5rem',
+                  borderRadius: '0.75rem',
+                  backgroundColor: '#1e293b',
+                  color: 'white',
+                  border: '1px solid #334155',
+                  outline: 'none',
+                  fontSize: '0.95rem',
+                }}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <Search
+                size={18}
+                style={{
+                  position: 'absolute',
+                  left: '1rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: '#64748b',
+                }}
+              />
             </div>
-            <form onSubmit={handleFormSubmit}>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-400">
-                  Equipment
-                </label>
-                <input
-                  type="text"
-                  value={newIssue.equipment}
-                  onChange={(e) =>
-                    setNewIssue({ ...newIssue, equipment: e.target.value })
-                  }
-                  className="w-full p-2 rounded bg-[#334155] text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-400">
-                  Lab
-                </label>
-                <input
-                  type="text"
-                  value={newIssue.lab}
-                  onChange={(e) =>
-                    setNewIssue({ ...newIssue, lab: e.target.value })
-                  }
-                  className="w-full p-2 rounded bg-[#334155] text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-400">
-                  Issue Type
-                </label>
-                <input
-                  type="text"
-                  value={newIssue.issueType}
-                  onChange={(e) =>
-                    setNewIssue({ ...newIssue, issueType: e.target.value })
-                  }
-                  className="w-full p-2 rounded bg-[#334155] text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-              <div className="flex justify-end">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded mr-2"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded"
-                >
-                  Submit
-                </button>
-              </div>
-            </form>
+
+            {/* Status Filter */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span style={{ fontSize: '0.875rem', color: '#94a3b8' }}>Filter by status:</span>
+              <select
+                style={{
+                  backgroundColor: '#1e293b',
+                  border: '1px solid #334155',
+                  borderRadius: '0.75rem',
+                  padding: '0.5rem',
+                  color: 'white',
+                  outline: 'none',
+                  fontSize: '0.95rem',
+                }}
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+              >
+                <option value="all">All</option>
+                <option value="open">Open</option>
+                <option value="in progress">In Progress</option>
+                <option value="resolved">Resolved</option>
+              </select>
+            </div>
           </div>
         </div>
-      )}
+
+        {/* Issues Table */}
+        <div
+          style={{
+            backgroundColor: '#1e293b',
+            borderRadius: '0.75rem',
+            overflow: 'hidden',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+          }}
+        >
+          <div style={{ overflowX: 'auto' }}>
+            <table
+              style={{
+                width: '100%',
+                borderCollapse: 'collapse',
+              }}
+            >
+              <thead>
+                <tr
+                  style={{
+                    backgroundColor: '#334155',
+                    textAlign: 'left',
+                    fontSize: '0.875rem',
+                    textTransform: 'uppercase',
+                    fontWeight: '600',
+                  }}
+                >
+                  <th style={{ padding: '0.75rem', color: '#94a3b8' }}>Issue ID</th>
+                  <th style={{ padding: '0.75rem', color: '#94a3b8' }}>Equipment</th>
+                  <th style={{ padding: '0.75rem', color: '#94a3b8' }}>Lab</th>
+                  <th style={{ padding: '0.75rem', color: '#94a3b8' }}>Issue Type</th>
+                  <th style={{ padding: '0.75rem', color: '#94a3b8' }}>Report Date</th>
+                  <th style={{ padding: '0.75rem', color: '#94a3b8' }}>Status</th>
+                  <th style={{ padding: '0.75rem', color: '#94a3b8' }}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredIssues.map((issue) => (
+                  <tr
+                    key={issue.id}
+                    style={{
+                      borderTop: '1px solid #334155',
+                      transition: 'background-color 0.3s ease',
+                    }}
+                    onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#2d3748')}
+                    onMouseOut={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                  >
+                    <td style={{ padding: '0.75rem', color: '#94a3b8' }}>{issue.id}</td>
+                    <td style={{ padding: '0.75rem', color: 'white' }}>{issue.equipment}</td>
+                    <td style={{ padding: '0.75rem', color: '#94a3b8' }}>{issue.lab}</td>
+                    <td style={{ padding: '0.75rem', color: '#94a3b8' }}>{issue.issueType}</td>
+                    <td style={{ padding: '0.75rem', color: '#94a3b8' }}>{issue.reportDate}</td>
+                    <td style={{ padding: '0.75rem' }}>
+                      <span
+                        style={{
+                          padding: '0.25rem 0.5rem',
+                          backgroundColor: getStatusBadgeColor(issue.status).split(' ')[0],
+                          color: getStatusBadgeColor(issue.status).split(' ')[1],
+                          borderRadius: '0.5rem',
+                          fontSize: '0.75rem',
+                          fontWeight: '600',
+                        }}
+                      >
+                        {issue.status}
+                      </span>
+                    </td>
+                    <td style={{ padding: '0.75rem' }}>
+                      <button
+                        style={{
+                          color: '#60a5fa',
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                          fontWeight: '600',
+                        }}
+                      >
+                        View Details
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* No Results */}
+        {filteredIssues.length === 0 && (
+          <div
+            style={{
+              textAlign: 'center',
+              padding: '2rem',
+              backgroundColor: '#1e293b',
+              borderRadius: '0.75rem',
+              marginTop: '1rem',
+            }}
+          >
+            <p style={{ color: '#94a3b8' }}>No issues found matching your filters.</p>
+          </div>
+        )}
+
+        {/* Modal for Reporting New Issue */}
+        {isModalOpen && (
+          <div
+            style={{
+              position: 'fixed',
+              inset: 0,
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 50,
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: '#1e293b',
+                padding: '2rem',
+                borderRadius: '0.75rem',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                width: '100%',
+                maxWidth: '500px',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '1rem',
+                }}
+              >
+                <h2
+                  style={{
+                    fontSize: '1.25rem',
+                    fontWeight: '700',
+                    color: 'white',
+                  }}
+                >
+                  Report New Issue
+                </h2>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  style={{
+                    color: '#94a3b8',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              <form onSubmit={handleFormSubmit}>
+                <div style={{ marginBottom: '1rem' }}>
+                  <label
+                    style={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: '600',
+                      color: '#94a3b8',
+                      marginBottom: '0.5rem',
+                    }}
+                  >
+                    Equipment
+                  </label>
+                  <input
+                    type="text"
+                    value={newIssue.equipment}
+                    onChange={(e) =>
+                      setNewIssue({ ...newIssue, equipment: e.target.value })
+                    }
+                    style={{
+                      width: '100%',
+                      padding: '0.875rem',
+                      borderRadius: '0.75rem',
+                      backgroundColor: '#334155',
+                      color: 'white',
+                      border: 'none',
+                      outline: 'none',
+                      fontSize: '0.95rem',
+                    }}
+                    required
+                  />
+                </div>
+                <div style={{ marginBottom: '1rem' }}>
+                  <label
+                    style={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: '600',
+                      color: '#94a3b8',
+                      marginBottom: '0.5rem',
+                    }}
+                  >
+                    Lab
+                  </label>
+                  <input
+                    type="text"
+                    value={newIssue.lab}
+                    onChange={(e) =>
+                      setNewIssue({ ...newIssue, lab: e.target.value })
+                    }
+                    style={{
+                      width: '100%',
+                      padding: '0.875rem',
+                      borderRadius: '0.75rem',
+                      backgroundColor: '#334155',
+                      color: 'white',
+                      border: 'none',
+                      outline: 'none',
+                      fontSize: '0.95rem',
+                    }}
+                    required
+                  />
+                </div>
+                <div style={{ marginBottom: '1rem' }}>
+                  <label
+                    style={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: '600',
+                      color: '#94a3b8',
+                      marginBottom: '0.5rem',
+                    }}
+                  >
+                    Issue Type
+                  </label>
+                  <input
+                    type="text"
+                    value={newIssue.issueType}
+                    onChange={(e) =>
+                      setNewIssue({ ...newIssue, issueType: e.target.value })
+                    }
+                    style={{
+                      width: '100%',
+                      padding: '0.875rem',
+                      borderRadius: '0.75rem',
+                      backgroundColor: '#334155',
+                      color: 'white',
+                      border: 'none',
+                      outline: 'none',
+                      fontSize: '0.95rem',
+                    }}
+                    required
+                  />
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
+                    style={{
+                      padding: '0.875rem 1.5rem',
+                      borderRadius: '0.75rem',
+                      backgroundColor: '#4b5563',
+                      color: 'white',
+                      fontWeight: '600',
+                      fontSize: '0.95rem',
+                      border: 'none',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    style={{
+                      padding: '0.875rem 1.5rem',
+                      borderRadius: '0.75rem',
+                      backgroundColor: '#2563eb',
+                      color: 'white',
+                      fontWeight: '600',
+                      fontSize: '0.95rem',
+                      border: 'none',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                    }}
+                  >
+                    Submit
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

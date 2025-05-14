@@ -23,19 +23,19 @@ export default function EquipmentReservationPage() {
 
   // Mock data for user's reservation requests
   const reservationRequests = [
-    { 
-      id: 1, 
-      equipment: 'Digital Oscilloscope Model DS1', 
-      startDateTime: '5/13/2025, 10:00 AM', 
-      endDateTime: '5/13/2025, 12:00 PM', 
-      status: 'Pending' 
+    {
+      id: 1,
+      equipment: 'Digital Oscilloscope Model DS1',
+      startDateTime: '5/13/2025, 10:00 AM',
+      endDateTime: '5/13/2025, 12:00 PM',
+      status: 'Pending',
     },
-    { 
-      id: 2, 
-      equipment: 'Function Generator Model FG1', 
-      startDateTime: '5/14/2025, 02:00 PM', 
-      endDateTime: '5/14/2025, 04:00 PM', 
-      status: 'Pending' 
+    {
+      id: 2,
+      equipment: 'Function Generator Model FG1',
+      startDateTime: '5/14/2025, 02:00 PM',
+      endDateTime: '5/14/2025, 04:00 PM',
+      status: 'Pending',
     },
     { 
       id: 3, 
@@ -53,113 +53,303 @@ export default function EquipmentReservationPage() {
     }
   ];
 
-  const filteredEquipment = availableEquipment.filter(item => 
-    item.name.toLowerCase().includes(filter.toLowerCase()) || 
-    item.id.toLowerCase().includes(filter.toLowerCase())
+  const filteredEquipment = availableEquipment.filter(
+    (item) =>
+      item.name.toLowerCase().includes(filter.toLowerCase()) ||
+      item.id.toLowerCase().includes(filter.toLowerCase())
   );
 
-  const filteredReservations = statusFilter === 'all' 
-    ? reservationRequests 
-    : reservationRequests.filter(req => req.status.toLowerCase() === statusFilter.toLowerCase());
+  const filteredReservations =
+    statusFilter === 'all'
+      ? reservationRequests
+      : reservationRequests.filter((req) => req.status.toLowerCase() === statusFilter.toLowerCase());
 
   return (
-    <div className="text-white">
-      <h1 className="text-2xl font-bold mb-6">Equipment Reservation</h1>
-      
-      {/* Available Equipment Section */}
-      <div className="mb-10">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Available Equipment</h2>
-          <button className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded flex items-center gap-2 transition-colors">
-            <Plus size={18} />
-            <span>Request Reservation</span>
-          </button>
+    <div
+      style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+        padding: '2rem',
+        fontFamily: 'system-ui, -apple-system, sans-serif',
+      }}
+    >
+      <div
+        style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          opacity: 1,
+          transform: 'translateY(0)',
+          transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '2rem',
+            position: 'relative',
+          }}
+        >
+          <h1
+            style={{
+              fontSize: '1.75rem',
+              fontWeight: '800',
+              lineHeight: '1.2',
+              maxWidth: '70%',
+              color: 'white',
+              background: 'linear-gradient(to right, #e2e8f0, #f8fafc)',
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+              textShadow: '0 0 30px rgba(59, 130, 246, 0.3)',
+            }}
+          >
+            Equipment Reservation
+          </h1>
         </div>
-        
-        {/* Search bar */}
-        <div className="mb-4">
-          <input
-            type="text"
-            placeholder="Search equipment by name or ID"
-            className="w-full p-2 rounded bg-[#1e293b] border border-[#334155] focus:outline-none focus:border-blue-500"
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-          />
-        </div>
-        
-        {/* Equipment table */}
-        <div className="bg-[#1e293b] rounded-md overflow-hidden">
-          <div className="overflow-x-auto"> {/* Added horizontal scroll */}
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="bg-[#334155] text-left text-sm uppercase font-semibold">
-                  <th className="px-4 py-3 text-gray-300">Item ID</th>
-                  <th className="px-4 py-3 text-gray-300">Name</th>
-                  <th className="px-4 py-3 text-gray-300">Type</th>
-                  <th className="px-4 py-3 text-gray-300">Availability</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredEquipment.map((item) => (
-                  <tr key={item.id} className="border-t border-[#334155] hover:bg-[#2d3748]">
-                    <td className="px-4 py-3 text-gray-300">{item.id}</td>
-                    <td className="px-4 py-3">{item.name}</td>
-                    <td className="px-4 py-3 text-gray-300">{item.type}</td>
-                    <td className="px-4 py-3 text-green-400">{item.availability}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      
-      {/* Your Reservation Requests Section */}
-      <div>
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Your Reservation Requests</h2>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-400">Filter by status:</span>
-            <select 
-              className="bg-[#1e293b] border border-[#334155] rounded p-1 text-sm focus:outline-none focus:border-blue-500"
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
+
+        {/* Decorative top bar */}
+        <div
+          style={{
+            height: '4px',
+            background: 'linear-gradient(to right, #3b82f6, #8b5cf6)',
+            borderRadius: '4px',
+            marginBottom: '2rem',
+          }}
+        />
+
+        {/* Available Equipment Section */}
+        <div style={{ marginBottom: '2rem' }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '1rem',
+            }}
+          >
+            <h2
+              style={{
+                fontSize: '1.25rem',
+                fontWeight: '700',
+                color: 'white',
+              }}
             >
-              <option value="all">All</option>
-              <option value="pending">Pending</option>
-              <option value="approved">Approved</option>
-              <option value="rejected">Rejected</option>
-            </select>
+              Available Equipment
+            </h2>
+            <button
+              style={{
+                padding: '0.875rem 1.5rem',
+                borderRadius: '0.75rem',
+                backgroundColor: '#2563eb',
+                color: 'white',
+                fontWeight: '600',
+                fontSize: '0.95rem',
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+              }}
+            >
+              <Plus size={18} style={{ marginRight: '0.5rem' }} />
+              Request Reservation
+            </button>
+          </div>
+
+          {/* Search bar */}
+          <div style={{ marginBottom: '1rem' }}>
+            <input
+              type="text"
+              placeholder="Search equipment by name or ID"
+              style={{
+                width: '100%',
+                padding: '0.875rem 1rem',
+                borderRadius: '0.75rem',
+                backgroundColor: '#1e293b',
+                color: 'white',
+                border: '1px solid #334155',
+                outline: 'none',
+                fontSize: '0.95rem',
+              }}
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+            />
+          </div>
+
+          {/* Equipment table */}
+          <div
+            style={{
+              backgroundColor: '#1e293b',
+              borderRadius: '0.75rem',
+              overflow: 'hidden',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+            }}
+          >
+            <div style={{ overflowX: 'auto' }}>
+              <table
+                style={{
+                  width: '100%',
+                  borderCollapse: 'collapse',
+                }}
+              >
+                <thead>
+                  <tr
+                    style={{
+                      backgroundColor: '#334155',
+                      textAlign: 'left',
+                      fontSize: '0.875rem',
+                      textTransform: 'uppercase',
+                      fontWeight: '600',
+                    }}
+                  >
+                    <th style={{ padding: '0.75rem', color: '#94a3b8' }}>Item ID</th>
+                    <th style={{ padding: '0.75rem', color: '#94a3b8' }}>Name</th>
+                    <th style={{ padding: '0.75rem', color: '#94a3b8' }}>Type</th>
+                    <th style={{ padding: '0.75rem', color: '#94a3b8' }}>Availability</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredEquipment.map((item) => (
+                    <tr
+                      key={item.id}
+                      style={{
+                        borderTop: '1px solid #334155',
+                        transition: 'background-color 0.3s ease',
+                      }}
+                      onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#2d3748')}
+                      onMouseOut={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                    >
+                      <td style={{ padding: '0.75rem', color: '#94a3b8' }}>{item.id}</td>
+                      <td style={{ padding: '0.75rem', color: 'white' }}>{item.name}</td>
+                      <td style={{ padding: '0.75rem', color: '#94a3b8' }}>{item.type}</td>
+                      <td style={{ padding: '0.75rem', color: '#10b981' }}>{item.availability}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-        
-        {/* Reservations table */}
-        <div className="bg-[#1e293b] rounded-md overflow-hidden">
-          <div className="overflow-x-auto"> {/* Added horizontal scroll */}
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="bg-[#334155] text-left text-sm uppercase font-semibold">
-                  <th className="px-4 py-3 text-gray-300">Equipment</th>
-                  <th className="px-4 py-3 text-gray-300">Start Date & Time</th>
-                  <th className="px-4 py-3 text-gray-300">End Date & Time</th>
-                  <th className="px-4 py-3 text-gray-300">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredReservations.map((req) => (
-                  <tr key={req.id} className="border-t border-[#334155] hover:bg-[#2d3748]">
-                    <td className="px-4 py-3">{req.equipment}</td>
-                    <td className="px-4 py-3 text-gray-300">{req.startDateTime}</td>
-                    <td className="px-4 py-3 text-gray-300">{req.endDateTime}</td>
-                    <td className="px-4 py-3">
-                      <span className="px-2 py-1 bg-yellow-500/20 text-yellow-400 rounded-full text-xs font-semibold">
-                        {req.status}
-                      </span>
-                    </td>
+
+        {/* Reservation Requests Section */}
+        <div>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '1rem',
+            }}
+          >
+            <h2
+              style={{
+                fontSize: '1.25rem',
+                fontWeight: '700',
+                color: 'white',
+              }}
+            >
+              Your Reservation Requests
+            </h2>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+              }}
+            >
+              <span
+                style={{
+                  fontSize: '0.875rem',
+                  color: '#94a3b8',
+                }}
+              >
+                Filter by status:
+              </span>
+              <select
+                style={{
+                  backgroundColor: '#1e293b',
+                  border: '1px solid #334155',
+                  borderRadius: '0.75rem',
+                  padding: '0.5rem',
+                  color: 'white',
+                  outline: 'none',
+                  fontSize: '0.95rem',
+                }}
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+              >
+                <option value="all">All</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Reservations table */}
+          <div
+            style={{
+              backgroundColor: '#1e293b',
+              borderRadius: '0.75rem',
+              overflow: 'hidden',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+            }}
+          >
+            <div style={{ overflowX: 'auto' }}>
+              <table
+                style={{
+                  width: '100%',
+                  borderCollapse: 'collapse',
+                }}
+              >
+                <thead>
+                  <tr
+                    style={{
+                      backgroundColor: '#334155',
+                      textAlign: 'left',
+                      fontSize: '0.875rem',
+                      textTransform: 'uppercase',
+                      fontWeight: '600',
+                    }}
+                  >
+                    <th style={{ padding: '0.75rem', color: '#94a3b8' }}>Equipment</th>
+                    <th style={{ padding: '0.75rem', color: '#94a3b8' }}>Start Date & Time</th>
+                    <th style={{ padding: '0.75rem', color: '#94a3b8' }}>End Date & Time</th>
+                    <th style={{ padding: '0.75rem', color: '#94a3b8' }}>Status</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {filteredReservations.map((req) => (
+                    <tr
+                      key={req.id}
+                      style={{
+                        borderTop: '1px solid #334155',
+                        transition: 'background-color 0.3s ease',
+                      }}
+                      onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#2d3748')}
+                      onMouseOut={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                    >
+                      <td style={{ padding: '0.75rem', color: 'white' }}>{req.equipment}</td>
+                      <td style={{ padding: '0.75rem', color: '#94a3b8' }}>{req.startDateTime}</td>
+                      <td style={{ padding: '0.75rem', color: '#94a3b8' }}>{req.endDateTime}</td>
+                      <td style={{ padding: '0.75rem' }}>
+                        <span
+                          style={{
+                            padding: '0.25rem 0.5rem',
+                            backgroundColor: '#fbbf24',
+                            color: '#92400e',
+                            borderRadius: '0.5rem',
+                            fontSize: '0.75rem',
+                            fontWeight: '600',
+                          }}
+                        >
+                          {req.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

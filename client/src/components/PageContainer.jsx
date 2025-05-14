@@ -1,7 +1,16 @@
 // components/PageContainer.js
 export default function PageContainer({ children }) {
   return (
-    <div className="flex-grow p-6 overflow-auto bg-[#0f172a] text-white">
+    <div
+      style={{
+        flexGrow: 1,
+        padding: '1.5rem',
+        overflow: 'auto',
+        background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+        color: 'white',
+        fontFamily: 'system-ui, -apple-system, sans-serif',
+      }}
+    >
       {children}
     </div>
   );

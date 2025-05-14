@@ -74,23 +74,92 @@ export default function CameraViewer({ mode = 'scan', onCapture, onStop }) {
   };
 
   return (
-    <div className="mt-4 bg-[#1e293b] border border-dashed border-[#334155] rounded p-8 flex flex-col items-center justify-center">
-      <video ref={videoRef} autoPlay playsInline className="w-64 h-64 bg-black rounded" />
-      <canvas ref={canvasRef} style={{ display: 'none' }} />
-      {mode === 'identify' && (
-        <button
-          onClick={handleCapture}
-          className="mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded"
-        >
-          Capture Image
-        </button>
-      )}
-      <button
-        onClick={onStop}
-        className="mt-4 bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded"
+    <div
+      style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+        padding: '2rem',
+        fontFamily: 'system-ui, -apple-system, sans-serif',
+      }}
+    >
+      <div
+        style={{
+          maxWidth: '600px',
+          margin: '0 auto',
+          backgroundColor: '#1e293b',
+          borderRadius: '0.75rem',
+          padding: '2rem',
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+        }}
       >
-        Stop Camera
-      </button>
+        <h1
+          style={{
+            fontSize: '1.5rem',
+            fontWeight: '700',
+            color: 'white',
+            marginBottom: '1.5rem',
+            textAlign: 'center',
+          }}
+        >
+          Camera Viewer
+        </h1>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '1rem',
+          }}
+        >
+          <video
+            ref={videoRef}
+            autoPlay
+            playsInline
+            style={{
+              width: '100%',
+              maxWidth: '400px',
+              height: 'auto',
+              backgroundColor: 'black',
+              borderRadius: '0.75rem',
+            }}
+          />
+          <canvas ref={canvasRef} style={{ display: 'none' }} />
+          {mode === 'identify' && (
+            <button
+              onClick={handleCapture}
+              style={{
+                padding: '0.875rem 1.5rem',
+                borderRadius: '0.75rem',
+                backgroundColor: '#2563eb',
+                color: 'white',
+                fontWeight: '600',
+                fontSize: '0.95rem',
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+              }}
+            >
+              Capture Image
+            </button>
+          )}
+          <button
+            onClick={onStop}
+            style={{
+              padding: '0.875rem 1.5rem',
+              borderRadius: '0.75rem',
+              backgroundColor: '#ef4444',
+              color: 'white',
+              fontWeight: '600',
+              fontSize: '0.95rem',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+            }}
+          >
+            Stop Camera
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
