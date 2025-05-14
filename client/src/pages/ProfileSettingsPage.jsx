@@ -8,13 +8,20 @@ export default function ProfileSettingsPage() {
   const [studentData, setStudentData] = useState(null);
   const [activeTab, setActiveTab] = useState('marks');
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const username = localStorage.getItem('username'); // Assuming username is stored in localStorage
-        const response = await fetch(`http://127.0.0.1:8000/profile/${username}`);
-        if (response.ok) {
-          const data = await response.json();
+useEffect(() => {
+  const fetchProfile = async () => {
+    try {
+      const username = localStorage.getItem('username'); // Retrieve username from localStorage
+      console.log('Username from localStorage:', username);
+
+      if (!username) {
+        console.error('Username is null or undefined');
+        return;
+      }
+
+      const response = await fetch(`http://127.0.0.1:8000/profile/${username}`);
+      if (response.ok) {
+        const data = await response.json();
 
           console.log('Profile data:', data);
           setStudentData({
