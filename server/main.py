@@ -10,6 +10,9 @@ from routes.img_process_routes import router as img_process_router
 from routes.esp32_routes import router as esp32_router
 
 # Include the ESP32 API routes
+#wifi ip usse everywhere
+#backend on 0.0.0.0
+#allow origins all these addreses as well
 
 
 
@@ -18,7 +21,7 @@ app = FastAPI()
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173","http://10.10.120.31:5173/","2322-103-104-226-58.ngrok-free.app","*"]  # Update with specific origins if needed
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173","http://10.10.120.31:5173/","2322-103-104-226-58.ngrok-free.app","192.168.170.157","0.0.0.0"]  # Update with specific origins if needed
     # Ngrok URL
 ,
     allow_credentials=True,
@@ -41,4 +44,4 @@ def read_root():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000)

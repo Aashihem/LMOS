@@ -28,7 +28,9 @@ const handleLogin = async (e) => {
       console.log('Login successful:', data);
 
       // Store username and login state in localStorage
-      localStorage.setItem('username', data.user.username); // Store the username
+      localStorage.setItem('username', data.user.username);
+      localStorage.setItem('username', data.user.uid_no);
+       // Store the username
       localStorage.setItem('isLoggedIn', 'true'); // Store login state
       
       console.log('Navigating to /dashboard');
