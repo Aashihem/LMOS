@@ -25,8 +25,8 @@ app.add_middleware(
 
 # Include the API routes
 app.include_router(login_router)
-#app.include_router(equipment_router, prefix="/api")
-#app.include_router(reservation_router, prefix="/api")
+# app.include_router(equipment_router, prefix="/api")
+# app.include_router(reservation_router, prefix="/api")
 app.include_router(profile_router)
 app.include_router(img_process_router)
 # Include other routers as needed
