@@ -6,8 +6,8 @@ from routes.login_routes import router as login_router
 
 from routes.profile_routes import router as profile_router
 from routes.img_process_routes import router as img_process_router
-
 from routes.esp32_routes import router as esp32_router
+
 
 # Include the ESP32 API routes
 #wifi ip usse everywhere
@@ -21,7 +21,7 @@ app = FastAPI()
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173","http://10.10.120.31:5173/","2322-103-104-226-58.ngrok-free.app","192.168.170.157","0.0.0.0"]  # Update with specific origins if needed
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173","http://10.10.120.31:5173/","2322-103-104-226-58.ngrok-free.app","192.168.170.20","0.0.0.0"]  # Update with specific origins if needed
     # Ngrok URL
 ,
     allow_credentials=True,

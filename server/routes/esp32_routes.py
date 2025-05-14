@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from datetime import datetime
 from db import get_db
-from models import Attendance  # Import your Attendance model
+from models import RFIDAttendance  # Update to match your model name
 
 router = APIRouter()
 
@@ -13,32 +13,28 @@ class ESP32Data(BaseModel):
 
 @router.post("/esp32/data")
 async def receive_esp32_data(data: ESP32Data, db: Session = Depends(get_db)):
-    block_data = data.block_data  # Extract the block_data from the request
+    block_data = data.block_data
+    block_data= int(block_data)  # Extract the block_data from the request
     print(f"Received data from ESP32: {block_data}")
+    attendance_record=0
+    print("att",attendance_record)
 
-    # Check if the UID exists in the attendance table
-    attendance_record = db.query(Attendance).filter(Attendance.uid == block_data).first()
+    # Check if the UID exists
+    #  in the rfid_attendance table
+    attendance_record = db.query(RFIDAttendance).filter(RFIDAttendance.uid == block_data).first()
+
+    print("att",attendance_record)
     if not attendance_record:
-        raise HTTPException(status_code=404, detail="UID not found in attendance table")
+        raise HTTPException(status_code=404, detail="UID not found in rfid_attendance table")
 
-    # Get the current date
-    current_date = datetime.now().strftime("%Y-%m-%d")
-
-    # Check if the column for the current date exists
-    if not hasattr(Attendance, current_date):
-        # Dynamically add a new column for the current date
-        from sqlalchemy import Column, DateTime
-        from sqlalchemy import inspect
-
-        inspector = inspect(db.get_bind())
-        if current_date not in [col["name"] for col in inspector.get_columns("attendance")]:
-            # Add the column to the table
-            from sqlalchemy import text
-            db.execute(text(f"ALTER TABLE attendance ADD COLUMN `{current_date}` DATETIME"))
-            db.commit()
-
-    # Update the timestamp for the matching UID
-    setattr(attendance_record, current_date, datetime.now())
+    print("HERE")
+    # Log the attendance as a new row with a timestamp
+    from sqlalchemy import text
+    current_timestamp = datetime.now()
+    db.execute(
+        text("INSERT INTO rfid_attendance (uid, timestamp) VALUES (:uid, :timestamp)"),
+        {"uid": block_data, "timestamp": current_timestamp}
+    )
     db.commit()
 
-    return {"message": "Attendance updated successfully", "uid": block_data, "timestamp": datetime.now()}
+    return {"message": "Attendance logged successfully", "uid": block_data, "timestamp": current_timestamp}

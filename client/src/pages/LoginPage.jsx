@@ -29,7 +29,7 @@ const handleLogin = async (e) => {
 
       // Store username and login state in localStorage
       localStorage.setItem('username', data.user.username);
-      localStorage.setItem('username', data.user.uid_no);
+      localStorage.setItem('uid', data.user.uid);
        // Store the username
       localStorage.setItem('isLoggedIn', 'true'); // Store login state
       
