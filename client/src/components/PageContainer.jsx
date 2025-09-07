@@ -4,7 +4,7 @@ export default function PageContainer({ children }) {
     <div
       style={{
         flexGrow: 1,
-        padding: '1.5rem',
+        padding: '',
         overflow: 'auto',
         background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
         color: 'white',

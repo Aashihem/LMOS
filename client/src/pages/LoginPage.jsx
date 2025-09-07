@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export default function LoginPage() {
+export default function LoginPage({ onLogin }) {
+  const [loginType, setLoginType] = useState('student'); // 'student' or 'faculty'
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -17,11 +18,7 @@ export default function LoginPage() {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setError('');
-    setIsLoading(true);
-
+  const handleStudentLogin = async () => {
     try {
       const response = await fetch('http://127.0.0.1:8000/login', {
         method: 'POST',
@@ -36,15 +33,19 @@ export default function LoginPage() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Login successful:', data);
+        console.log('Student login successful:', data);
 
-        // Store username and login state in localStorage
+        // Store user info and login state
         localStorage.setItem('username', data.user.username);
         localStorage.setItem('uid_no', data.user.uid_no);
-        localStorage.setItem('isLoggedIn', 'true'); 
-        
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userType', 'Student'); // Use 'Student' to match App.jsx logic
+
+        // **FIX: Call onLogin to update parent state**
+        onLogin();
+
         console.log('Navigating to /dashboard');
-        navigate('/dashboard'); // Redirect to the dashboard
+        navigate('/dashboard'); // Redirect to the student dashboard
       } else {
         const errorData = await response.json();
         setError(errorData.detail || 'Invalid username or password');
@@ -52,9 +53,55 @@ export default function LoginPage() {
     } catch (err) {
       console.error('Login failed:', err);
       setError('Server error. Please try again later.');
-    } finally {
-      setIsLoading(false);
     }
+  };
+
+  const handleFacultyLogin = () => {
+    // Dummy authentication for faculty
+    if (username === 'faculty' && password === 'password') {
+      console.log('Faculty login successful');
+      localStorage.setItem('username', 'faculty');
+      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('userType', 'Faculty'); // Use 'Faculty' to match App.jsx logic
+      
+      // **FIX: Call onLogin to update parent state**
+      onLogin();
+
+      navigate('/faculty-dashboard'); // Redirect to faculty dashboard
+    } else {
+      setError('Invalid faculty credentials.');
+    }
+  };
+
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
+
+    if (loginType === 'student') {
+      await handleStudentLogin();
+    } else {
+      // Simulate network delay for dummy login
+      setTimeout(() => {
+        handleFacultyLogin();
+        setIsLoading(false);
+      }, 1000);
+      return; // prevent finally block from running early
+    }
+
+    setIsLoading(false);
+  };
+
+  const activeTabStyles = {
+    background: 'linear-gradient(to right, #3b82f6, #8b5cf6)',
+    color: 'white',
+    boxShadow: '0 4px 14px 0 rgba(0, 118, 255, 0.39)',
+  };
+
+  const inactiveTabStyles = {
+    background: 'rgba(30, 41, 59, 0.8)',
+    color: '#e2e8f0',
   };
 
   return (
@@ -128,7 +175,7 @@ export default function LoginPage() {
           style={{
             fontSize: '2.5rem',
             fontWeight: '800',
-            marginBottom: '2rem',
+            marginBottom: '1rem',
             textAlign: 'center',
             background: 'linear-gradient(to right, #3b82f6, #8b5cf6)',
             WebkitBackgroundClip: 'text',
@@ -141,6 +188,42 @@ export default function LoginPage() {
           L.M.O.S.
         </h1>
         
+        {/* Login Type Tabs */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2rem', background: 'rgba(15, 23, 42, 0.5)', borderRadius: '0.75rem', padding: '0.25rem' }}>
+          <button
+            onClick={() => setLoginType('student')}
+            style={{
+                flex: 1,
+                padding: '0.6rem 1rem',
+                border: 'none',
+                borderRadius: '0.6rem',
+                cursor: 'pointer',
+                fontSize: '0.9rem',
+                fontWeight: '600',
+                transition: 'all 0.3s ease',
+                ...(loginType === 'student' ? activeTabStyles : inactiveTabStyles)
+            }}
+          >
+            Student
+          </button>
+          <button
+            onClick={() => setLoginType('faculty')}
+            style={{
+                flex: 1,
+                padding: '0.6rem 1rem',
+                border: 'none',
+                borderRadius: '0.6rem',
+                cursor: 'pointer',
+                fontSize: '0.9rem',
+                fontWeight: '600',
+                transition: 'all 0.3s ease',
+                ...(loginType === 'faculty' ? activeTabStyles : inactiveTabStyles)
+            }}
+          >
+            Faculty
+          </button>
+        </div>
+
         <form onSubmit={handleLogin}>
           <div style={{ marginBottom: '1.75rem' }}>
             <label 
@@ -165,7 +248,7 @@ export default function LoginPage() {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Enter your username"
+                placeholder={`Enter ${loginType} username`}
                 style={{
                   width: '100%',
                   padding: '0.875rem 1rem',
@@ -208,7 +291,7 @@ export default function LoginPage() {
           </div>
           
           <div style={{ marginBottom: '1.75rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
               <label 
                 style={{
                   fontSize: '0.875rem',
@@ -343,14 +426,16 @@ export default function LoginPage() {
           >
             {isLoading ? (
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <style>{`
+                  @keyframes spin {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
+                  }
+                `}</style>
                 <svg 
                   style={{
                     animation: 'spin 1s linear infinite',
                     marginRight: '0.5rem',
-                    '@keyframes spin': {
-                      from: { transform: 'rotate(0deg)' },
-                      to: { transform: 'rotate(360deg)' }
-                    }
                   }}
                   xmlns="http://www.w3.org/2000/svg" 
                   width="16" 
