@@ -1,5 +1,3 @@
-// src/components/Sidebar.jsx
-
 import React from 'react';
 import {
   LayoutDashboard,
@@ -13,6 +11,7 @@ import {
   Users,
   AlertTriangle,
   ClipboardCheck,
+  ClipboardPlus,
 } from 'lucide-react';
 
 // Define the menu items for each user type
@@ -22,7 +21,7 @@ const studentMenuItems = [
   { name: 'Issue Reporting', icon: Wrench },
   { name: 'Equipment Manuals', icon: Book },
   { name: 'Equipment Identification', icon: Camera },
-  { name: 'Experiments', icon: FlaskConical },
+  { name: 'Lab Submissions', icon: FlaskConical }, // UPDATED Name
   { name: 'Profile & Settings', icon: User },
 ];
 
@@ -31,13 +30,13 @@ const facultyMenuItems = [
   { name: 'Equipment Management', icon: Wrench },
   { name: 'Issue Handling', icon: AlertTriangle },
   { name: 'Experiments Management', icon: FlaskConical },
+  { name: 'Manage Batches', icon: ClipboardPlus }, // NEW Page
   { name: 'Student Monitoring', icon: Users },
   { name: 'Reports & Analytics', icon: BarChart3 },
   { name: 'Profile & Settings', icon: User },
 ];
 
 export default function Sidebar({ userType, activePage, navigateTo, onLogout }) {
-  // Choose the correct menu items based on userType
   const menuItems = userType === 'faculty' ? facultyMenuItems : studentMenuItems;
   const username = localStorage.getItem('username') || 'User';
 
@@ -92,3 +91,4 @@ export default function Sidebar({ userType, activePage, navigateTo, onLogout }) 
     </div>
   );
 }
+

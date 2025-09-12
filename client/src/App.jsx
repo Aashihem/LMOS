@@ -10,7 +10,7 @@ import EquipmentReservationPage from './pages/EquipmentReservationPage';
 import IssueReportingPage from './pages/IssueReportingPage';
 import EquipmentManualsPage from './pages/EquipmentManualsPage';
 import EquipmentIdentificationPage from './pages/EquipmentIdentificationPage';
-import ExperimentsPage from './pages/ExperimentsPage';
+import ExperimentsPage from './pages/LabPage';
 import ExperimentDetail from './pages/ExperimentDetail';
 import ProfileSettingsPage from './pages/ProfileSettingsPage';
 import LoginPage from './pages/LoginPage';
@@ -23,7 +23,8 @@ import FacultyExperimentsManagementPage from './pages/FacultyExperimentsManageme
 import FacultyStudentMonitoringPage from './pages/FacultyStudentMonitoringPage';
 import FacultyReportsAnalyticsPage from './pages/FacultyReportsAnalyticsPage';
 import FacultyProfileSettingsPage from './pages/FacultyProfileSettingsPage';
-import FacultySubmissionsPage from './pages/FacultySubmissionsPage'; // Added missing import
+import FacultySubmissionsPage from './pages/FacultySubmissionsPage';
+import FacultyManageBatchesPage from './pages/FacultyManageBatchesPage'; // <-- IMPORT the new page
 
 // Import custom fonts
 const fontImport = `
@@ -44,24 +45,6 @@ export default function LMOSApp() {
     setUserType(storedUserType);
   }, []);
 
-  // Log state changes (for debugging)
-  useEffect(() => {
-    console.log('App state changed:', { isLoggedIn, userType });
-  }, [isLoggedIn, userType]);
-
-  // Listen for storage changes (multi-tab support)
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const newLoggedInStatus = localStorage.getItem('isLoggedIn') === 'true';
-      const newUserType = localStorage.getItem('userType');
-      setIsLoggedIn(newLoggedInStatus);
-      setUserType(newUserType);
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
-
   const handleLogin = () => {
     setIsLoggedIn(true);
     setUserType(localStorage.getItem('userType'));
@@ -70,8 +53,7 @@ export default function LMOSApp() {
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUserType(null);
-    localStorage.clear(); // A more robust way to clear all login data
-    // Redirect to login page after logout
+    localStorage.clear();
     window.location.href = '/login';
   };
 
@@ -79,6 +61,7 @@ export default function LMOSApp() {
     setActivePage(page);
     setExperimentId(id);
   };
+
   const renderStudentPage = () => {
     switch (activePage) {
       case "Dashboard": return <DashboardPage />;
@@ -86,20 +69,20 @@ export default function LMOSApp() {
       case "Issue Reporting": return <IssueReportingPage />;
       case "Equipment Manuals": return <EquipmentManualsPage />;
       case "Equipment Identification": return <EquipmentIdentificationPage />;
-      case "Experiments": return <ExperimentsPage navigateTo={navigateTo} />;
+      case "Lab Submissions": return <ExperimentsPage navigateTo={navigateTo} />; // UPDATED Name
       case "ExperimentDetail": return <ExperimentDetail experimentId={experimentId} navigateTo={navigateTo} />;
       case "Profile & Settings": return <ProfileSettingsPage />;
       default: return <DashboardPage />;
     }
   };
   
-  // This is the single, correct version of the function
   const renderFacultyPage = () => {
     switch (activePage) {
       case "Dashboard": return <FacultyDashboard />;
       case "Equipment Management": return <FacultyEquipmentManagementPage />;
       case "Issue Handling": return <FacultyIssueHandlingPage />;
       case "Experiments Management": return <FacultyExperimentsManagementPage navigateTo={navigateTo} />;
+      case "Manage Batches": return <FacultyManageBatchesPage />; // NEW Page
       case "Submissions": return <FacultySubmissionsPage experimentId={experimentId} navigateTo={navigateTo} />;
       case "Student Monitoring": return <FacultyStudentMonitoringPage />;
       case "Reports & Analytics": return <FacultyReportsAnalyticsPage />;
@@ -107,18 +90,14 @@ export default function LMOSApp() {
       default: return <FacultyDashboard />;
     }
   };
-  
+
   return (
     <Router>
       <div className="flex h-screen bg-[#0f172a]" style={{ fontFamily: 'Inter, sans-serif' }}>
-        {/* Load Google font */}
         <style dangerouslySetInnerHTML={{ __html: fontImport }} />
 
         <Routes>
-          {/* Login route */}
           <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
-
-          {/* Combined dashboard route for both user types */}
           <Route
             path="/*"
             element={
@@ -126,15 +105,12 @@ export default function LMOSApp() {
                 <Navigate to="/login" />
               ) : (
                 <div className="flex h-screen w-full">
-                  {/* Sidebar fixed on left */}
                   <Sidebar
                     activePage={activePage}
                     navigateTo={navigateTo}
                     onLogout={handleLogout}
-                    userType={userType} // Pass userType to Sidebar
+                    userType={userType}
                   />
-
-                  {/* Main Page Content */}
                   <PageContainer>
                     {userType === 'faculty' ? renderFacultyPage() : renderStudentPage()}
                   </PageContainer>
@@ -142,20 +118,6 @@ export default function LMOSApp() {
               )
             }
           />
-          
-          <Route
-            path="/faculty-dashboard"
-            element={
-              !isLoggedIn ? (
-                   <Navigate to="/login" />
-              ) : userType === 'Student' ? ( // Corrected case for robustness
-                   <Navigate to="/dashboard" />
-              ) : (
-                <FacultyDashboard onLogout={handleLogout} />
-              )
-            }
-          />
-
         </Routes>
       </div>
     </Router>

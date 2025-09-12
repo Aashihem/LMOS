@@ -9,11 +9,13 @@ from routes import (
     img_process_routes,
     esp32_routes,
     dashboard_routes,
-    issue_routes,      # Corrected from 'issues_routes'
+    issue_routes, 
     reservation_routes,
     equipment_routes,
     attendance_routes,
-    experiment_routes  # Added the missing import
+    batch_routes,
+    user_routes, # Removed the comma from this line
+    experiment_routes
 )
 
 app = FastAPI()
@@ -37,7 +39,9 @@ app.include_router(issue_routes.router)
 app.include_router(reservation_routes.router)
 app.include_router(equipment_routes.router)
 app.include_router(attendance_routes.router)
-app.include_router(experiment_routes.router) # Added the router
+app.include_router(experiment_routes.router)
+app.include_router(batch_routes.router)
+app.include_router(user_routes.router)
 
 
 @app.get("/")
@@ -48,4 +52,3 @@ def read_root():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
-
