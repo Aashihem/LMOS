@@ -79,7 +79,6 @@ export default function LMOSApp() {
     setActivePage(page);
     setExperimentId(id);
   };
-
   const renderStudentPage = () => {
     switch (activePage) {
       case "Dashboard": return <DashboardPage />;
@@ -108,7 +107,7 @@ export default function LMOSApp() {
       default: return <FacultyDashboard />;
     }
   };
-
+  
   return (
     <Router>
       <div className="flex h-screen bg-[#0f172a]" style={{ fontFamily: 'Inter, sans-serif' }}>
@@ -143,6 +142,20 @@ export default function LMOSApp() {
               )
             }
           />
+          
+          <Route
+            path="/faculty-dashboard"
+            element={
+              !isLoggedIn ? (
+                   <Navigate to="/login" />
+              ) : userType === 'Student' ? ( // Corrected case for robustness
+                   <Navigate to="/dashboard" />
+              ) : (
+                <FacultyDashboard onLogout={handleLogout} />
+              )
+            }
+          />
+
         </Routes>
       </div>
     </Router>
