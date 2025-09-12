@@ -1,10 +1,40 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* Make page take full height */
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
+/* Root container: flexbox for sidebar + content */
+#root {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  text-align: left;
+  background-color: rgb(15 23 42); /* dark dashboard background */
+}
+
+/* Sidebar styling */
+.sidebar {
+  width: 250px;
+  background-color: rgb(30 39 50); /* dark sidebar */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* logout pinned at bottom */
+  color: white;
+}
+
+/* Main content styling */
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  background-color: rgb(15 23 42);
+  color: white;
+}
+
+/* Keep your existing styles */
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -39,4 +69,15 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* Custom hover colors */
+.bg-slate-750 {
+  background-color: rgb(30 39 50);
+}
+.hover\:bg-slate-750:hover {
+  background-color: rgb(30 39 50);
+}
+.hover\:bg-slate-700:hover {
+  background-color: rgb(51 65 85);
 }
