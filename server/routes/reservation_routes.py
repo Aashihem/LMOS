@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-from typing import List
-from datetime import date  # <-- ADD THIS IMPORT
+from typing import List, Optional
+from datetime import date, datetime  # Correctly import datetime and date
 from db import get_db
 from models import ReservationRequest, User
 
@@ -15,14 +15,14 @@ router = APIRouter(
 class ReservationCreate(BaseModel):
     username: str
     equipment: str
-    start_date: str
-    end_date: str
+    start_date: datetime  # <-- CORRECTED: Changed from str to datetime
+    end_date: datetime    # <-- CORRECTED: Changed from str to datetime
 
 class StudentReservationDisplay(BaseModel):
     reservation_id: int
     equipment: str
-    start_date: date  # <-- CHANGE from str to date
-    end_date: date    # <-- CHANGE from str to date
+    start_date: datetime  # <-- CORRECTED: Changed from date to datetime
+    end_date: datetime    # <-- CORRECTED: Changed from date to datetime
     status: str
 
     class Config:
@@ -31,8 +31,8 @@ class StudentReservationDisplay(BaseModel):
 class FacultyReservationDisplay(BaseModel):
     reservation_id: int
     equipment: str
-    start_date: date  # <-- CHANGE from str to date
-    end_date: date    # <-- CHANGE from str to date
+    start_date: datetime  # <-- CORRECTED: Changed from date to datetime
+    end_date: datetime    # <-- CORRECTED: Changed from date to datetime
     status: str
     student_name: str
     
@@ -86,7 +86,6 @@ def get_pending_reservations(db: Session = Depends(get_db)):
         ))
     return response
 
-# ... (the rest of your approve and reject endpoints remain the same) ...
 @router.patch("/reservations/{reservation_id}/approve", status_code=status.HTTP_200_OK)
 def approve_reservation(reservation_id: int, db: Session = Depends(get_db)):
     reservation = db.query(ReservationRequest).filter(ReservationRequest.reservation_id == reservation_id).first()
@@ -104,4 +103,3 @@ def reject_reservation(reservation_id: int, db: Session = Depends(get_db)):
     reservation.status = "Rejected"
     db.commit()
     return {"message": "Reservation rejected."}
-

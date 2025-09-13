@@ -75,6 +75,7 @@ export default function EquipmentReservationPage() {
             if (!response.ok) throw new Error('Reservation request failed.');
             
             setSubmitMessage({ type: 'success', text: 'Reservation submitted successfully!' });
+            
             // Refetch reservations to show the new pending request
             const resResponse = await fetch(`http://127.0.0.1:8000/api/reservations/my-requests/${username}`);
             const resData = await resResponse.json();
@@ -83,7 +84,6 @@ export default function EquipmentReservationPage() {
             setTimeout(() => {
                 setIsModalOpen(false);
                 setSubmitMessage(null);
-                // Reset form
                 setSelectedEquipment('');
                 setStartDate('');
                 setEndDate('');
@@ -95,9 +95,10 @@ export default function EquipmentReservationPage() {
         }
     };
     
+    // Filter equipment based on search query
     const filteredEquipment = availableEquipment.filter(item =>
-        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.id.toLowerCase().includes(searchQuery.toLowerCase())
+        item.equipment_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.equipment_id.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     return (
@@ -135,19 +136,25 @@ export default function EquipmentReservationPage() {
                                     <tr>
                                         <th className="px-6 py-3">Item ID</th>
                                         <th className="px-6 py-3">Name</th>
-                                        <th className="px-6 py-3">Type</th>
-                                        <th className="px-6 py-3">Availability</th>
+                                        <th className="px-6 py-3">Available Units</th>
+                                        <th className="px-6 py-3">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-700">
-                                    {filteredEquipment.map(item => (
-                                        <tr key={item.id} className="hover:bg-slate-700/50">
-                                            <td className="px-6 py-4 text-slate-400">{item.id}</td>
-                                            <td className="px-6 py-4 font-medium">{item.name}</td>
-                                            <td className="px-6 py-4 text-slate-400">{item.type}</td>
-                                            <td className="px-6 py-4 text-green-400 font-semibold">{item.availability}</td>
+                                    {filteredEquipment && filteredEquipment.length > 0 ? (
+                                        filteredEquipment.map(item => (
+                                            <tr key={item.equipment_id} className="hover:bg-slate-700/50">
+                                                <td className="px-6 py-4 text-slate-400">{item.equipment_id}</td>
+                                                <td className="px-6 py-4 font-medium">{item.equipment_name}</td>
+                                                <td className="px-6 py-4 text-green-400 font-semibold">{item.available_units}</td>
+                                                <td className="px-6 py-4 text-green-400 font-semibold">{item.available_units > 0 ? 'Available' : 'Unavailable'}</td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan="4" className="px-6 py-4 text-center text-slate-500">No equipment found.</td>
                                         </tr>
-                                    ))}
+                                    )}
                                 </tbody>
                             </table>
                         </div>
@@ -159,7 +166,7 @@ export default function EquipmentReservationPage() {
             <div>
                 <h2 className="text-xl font-semibold mb-4">Your Reservation Requests</h2>
                 <div className="bg-slate-800/50 rounded-lg overflow-hidden border border-slate-700">
-                     <div className="overflow-x-auto">
+                    <div className="overflow-x-auto">
                         <table className="w-full text-sm text-left">
                             <thead className="text-xs text-slate-400 uppercase bg-slate-800">
                                 <tr>
@@ -170,14 +177,20 @@ export default function EquipmentReservationPage() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-700">
-                                {myReservations.map(req => (
-                                    <tr key={req.reservation_id} className="hover:bg-slate-700/50">
-                                        <td className="px-6 py-4 font-medium">{req.equipment}</td>
-                                        <td className="px-6 py-4 text-slate-400">{new Date(req.start_date).toLocaleString()}</td>
-                                        <td className="px-6 py-4 text-slate-400">{new Date(req.end_date).toLocaleString()}</td>
-                                        <td className="px-6 py-4"><StatusBadge status={req.status} /></td>
+                                {myReservations && myReservations.length > 0 ? (
+                                    myReservations.map(req => (
+                                        <tr key={req.reservation_id} className="hover:bg-slate-700/50">
+                                            <td className="px-6 py-4 font-medium">{req.equipment}</td>
+                                            <td className="px-6 py-4 text-slate-400">{new Date(req.start_date).toLocaleString()}</td>
+                                            <td className="px-6 py-4 text-slate-400">{new Date(req.end_date).toLocaleString()}</td>
+                                            <td className="px-6 py-4"><StatusBadge status={req.status} /></td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="4" className="px-6 py-4 text-center text-slate-500">You have no reservation requests.</td>
                                     </tr>
-                                ))}
+                                )}
                             </tbody>
                         </table>
                     </div>
@@ -197,7 +210,7 @@ export default function EquipmentReservationPage() {
                                 <label className="block text-sm font-medium text-slate-300 mb-1">Equipment</label>
                                 <select value={selectedEquipment} onChange={e => setSelectedEquipment(e.target.value)} required className="w-full bg-slate-700 p-2 rounded border border-slate-600 focus:ring-2 focus:ring-blue-500 outline-none">
                                     <option value="" disabled>Select Equipment</option>
-                                    {availableEquipment.map(eq => <option key={eq.id} value={eq.name}>{eq.name}</option>)}
+                                    {availableEquipment.map(eq => <option key={eq.equipment_id} value={eq.equipment_name}>{eq.equipment_name}</option>)}
                                 </select>
                             </div>
                             <div>
@@ -221,4 +234,3 @@ export default function EquipmentReservationPage() {
         </div>
     );
 }
-
