@@ -4,7 +4,6 @@ from db import Base
 from datetime import datetime
 
 # --- Association Table for Students and Batches (Many-to-Many) ---
-# This table links students to the specific lab batches they are enrolled in.
 student_batch_association = Table('student_batch_association', Base.metadata,
     Column('user_uid', Integer, ForeignKey('users.uid')),
     Column('batch_id', Integer, ForeignKey('lab_batches.id'))
@@ -22,15 +21,14 @@ class User(Base):
     password = Column(String(255), nullable=False)
     uid_no = Column(String(255), nullable=True)
 
-    # --- Relationships to other tables ---
+    # The submissions relationship is removed from here
     reservations = relationship("ReservationRequest", back_populates="user")
     issues = relationship("EquipmentIssue", back_populates="reporter")
-    submissions = relationship("Submission", back_populates="student")
     batches = relationship("LabBatch", secondary=student_batch_association, back_populates="students")
 
 class Faculty(Base):
     __tablename__ = "faculty"
-    faculty_id = Column(Integer, primary_key=True, index=True) # Corrected from 'id'
+    faculty_id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=False)
     email = Column(String(255), unique=True, nullable=False)
     phone_number = Column(String(15), nullable=True)
@@ -46,7 +44,7 @@ class LabBatch(Base):
     name = Column(String(255), nullable=False)
     lab_name = Column(String(100))
     
-    faculty_id = Column(Integer, ForeignKey("faculty.faculty_id")) # Corrected from 'faculty.id'
+    faculty_id = Column(Integer, ForeignKey("faculty.faculty_id"))
     faculty = relationship("Faculty", back_populates="batches")
 
     students = relationship("User", secondary=student_batch_association, back_populates="batches")
@@ -63,22 +61,14 @@ class Experiment(Base):
     lab_batch_id = Column(Integer, ForeignKey("lab_batches.id"))
     batch = relationship("LabBatch", back_populates="experiments")
 
-    submissions = relationship("Submission", back_populates="experiment")
+    # The submissions relationship is removed from here
+    # submissions = relationship("Submission", back_populates="experiment")
 
-class Submission(Base):
-    __tablename__ = "submissions"
-    id = Column(Integer, primary_key=True, index=True)
-    submitted_at = Column(DateTime, default=datetime.utcnow)
-    grade = Column(String(50), nullable=True)
-    
-    student_uid = Column(Integer, ForeignKey("users.uid"), nullable=False)
-    experiment_id = Column(Integer, ForeignKey("experiments.id"), nullable=False)
-    
-    student = relationship("User", back_populates="submissions")
-    experiment = relationship("Experiment", back_populates="submissions")
+# The entire Submission class has been removed
+# class Submission(Base):
+#     ...
 
 # --- Supporting Models ---
-# (EquipmentIssue, EquipmentDetails, ReservationRequest, RFIDAttendance remain the same)
 class EquipmentIssue(Base):
     __tablename__ = "equipment_issues"
     issue_id = Column(Integer, primary_key=True, index=True)
@@ -112,4 +102,3 @@ class RFIDAttendance(Base):
     id = Column(Integer, primary_key=True, index=True)
     uid = Column(String(255), nullable=False)
     timestamp = Column(DateTime, default=datetime.utcnow, nullable=False)
-

@@ -14,8 +14,7 @@ from routes import (
     equipment_routes,
     attendance_routes,
     batch_routes,
-    user_routes, # Removed the comma from this line
-    experiment_routes
+    user_routes
 )
 
 app = FastAPI()
@@ -39,7 +38,6 @@ app.include_router(issue_routes.router)
 app.include_router(reservation_routes.router)
 app.include_router(equipment_routes.router)
 app.include_router(attendance_routes.router)
-app.include_router(experiment_routes.router)
 app.include_router(batch_routes.router)
 app.include_router(user_routes.router)
 

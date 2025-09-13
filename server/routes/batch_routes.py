@@ -3,9 +3,9 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import List
+from datetime import date
 from db import get_db
 from models import LabBatch, User, Faculty, Experiment
-from datetime import date # Correct import for date type
 
 router = APIRouter(prefix="/api/batches", tags=["Batches"])
 
@@ -28,23 +28,31 @@ class ExperimentDisplay(BaseModel):
     id: int
     title: str
     description: str
-    due_date: date  # Changed to date type to match models.py
+    due_date: date
     class Config:
         from_attributes = True
 
 class ExperimentCreate(BaseModel):
     title: str
     description: str
-    due_date: str # This should remain a string as the frontend sends it this way
+    due_date: str
     class Config:
-        from_attributes = True # Added from_attributes for proper Pydantic behavior
+        from_attributes = True
 
 class FacultyBatchDisplay(BaseModel):
     id: int
     name: str
     lab_name: str
     students_count: int
-    # REMOVED: class Config: from_attributes = True (as previously corrected)
+    # REMOVED: class Config: from_attributes = True
+
+class StudentDisplay(BaseModel):
+    uid: int
+    name: str
+    username: str
+    class Config:
+        from_attributes = True
+
 
 # --- API Endpoints ---
 @router.post("/", status_code=status.HTTP_201_CREATED)
@@ -159,3 +167,14 @@ def get_batch_experiments(batch_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Batch not found")
         
     return batch.experiments
+
+@router.get("/{batch_id}/students", response_model=List[StudentDisplay])
+def get_batch_students(batch_id: int, db: Session = Depends(get_db)):
+    """
+    Retrieves all students enrolled in a specific batch.
+    """
+    batch = db.query(LabBatch).filter(LabBatch.id == batch_id).first()
+    if not batch:
+        raise HTTPException(status_code=404, detail="Batch not found")
+
+    return batch.students

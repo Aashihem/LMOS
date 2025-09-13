@@ -1,74 +1,52 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
-from pydantic import BaseModel
-from typing import List, Optional
-from datetime import date
-from db import get_db
-from models import Experiment, Submission, User
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-router = APIRouter(
-    prefix="/api/experiments",
-    tags=["Experiments"]
+# --- Import all your route modules ---
+from routes import (
+    login_routes,
+    profile_routes,
+    img_process_routes,
+    esp32_routes,
+    dashboard_routes,
+    issue_routes, 
+    reservation_routes,
+    equipment_routes,
+    attendance_routes,
+    batch_routes,
+    user_routes
+    # REMOVED: experiment_routes
 )
 
-# --- Pydantic Models ---
-class ExperimentCreate(BaseModel):
-    title: str
-    description: Optional[str] = None
-    lab: str
-    batch: str
-    due_date: date
+app = FastAPI()
 
-class ExperimentDisplay(BaseModel):
-    id: int
-    title: str
-    description: Optional[str] = None
-    lab: str
-    batch: str
-    due_date: date
-    status: str
+# --- CORS Middleware Setup ---
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-    class Config:
-        from_attributes = True
-        
-class SubmissionDisplay(BaseModel):
-    id: int
-    submitted_at: date
-    student_name: str
-    grade: Optional[str] = None
+# --- Include all your API routers ---
+app.include_router(login_routes.router)
+app.include_router(profile_routes.router)
+app.include_router(img_process_routes.router)
+app.include_router(esp32_routes.router)
+app.include_router(dashboard_routes.router)
+app.include_router(issue_routes.router)
+app.include_router(reservation_routes.router)
+app.include_router(equipment_routes.router)
+app.include_router(attendance_routes.router)
+app.include_router(batch_routes.router)
+app.include_router(user_routes.router)
+# REMOVED: app.include_router(experiment_routes.router)
 
-    class Config:
-        from_attributes = True
 
-# --- API Endpoints ---
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to the LMOS Backend!"}
 
-# POST /api/experiments - For faculty to create a new experiment
-@router.post("/", response_model=ExperimentDisplay, status_code=status.HTTP_201_CREATED)
-def create_experiment(request: ExperimentCreate, db: Session = Depends(get_db)):
-    new_experiment = Experiment(**request.dict())
-    db.add(new_experiment)
-    db.commit()
-    db.refresh(new_experiment)
-    return new_experiment
-
-# GET /api/experiments - For both students and faculty to get a list of all experiments
-@router.get("/", response_model=List[ExperimentDisplay])
-def get_all_experiments(db: Session = Depends(get_db)):
-    experiments = db.query(Experiment).order_by(Experiment.due_date.desc()).all()
-    return experiments
-    
-# GET /api/experiments/{experiment_id}/submissions - For faculty to view submissions for an experiment
-@router.get("/{experiment_id}/submissions", response_model=List[SubmissionDisplay])
-def get_submissions_for_experiment(experiment_id: int, db: Session = Depends(get_db)):
-    submissions = db.query(Submission).join(User).filter(Submission.experiment_id == experiment_id).all()
-    
-    # Format the response to include the student's name
-    response = []
-    for sub in submissions:
-        response.append(SubmissionDisplay(
-            id=sub.id,
-            submitted_at=sub.submitted_at,
-            student_name=sub.student.name,
-            grade=sub.grade
-        ))
-    return response
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

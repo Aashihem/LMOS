@@ -29,7 +29,6 @@ const facultyMenuItems = [
   { name: 'Dashboard', icon: LayoutDashboard },
   { name: 'Equipment Management', icon: Wrench },
   { name: 'Issue Handling', icon: AlertTriangle },
-  { name: 'Experiments Management', icon: FlaskConical },
   { name: 'Manage Batches', icon: ClipboardPlus }, // NEW Page
   { name: 'Student Monitoring', icon: Users },
   { name: 'Reports & Analytics', icon: BarChart3 },
