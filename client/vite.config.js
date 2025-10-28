@@ -10,6 +10,6 @@ export default defineConfig({
     port: 5173, // Optional: Specify the port
     // allowedHosts:['all'],
     // allowedHosts: ['1cc1-106-215-183-208.ngrok-free.app'],
-     allowedHosts: ['bebd-2409-40c0-6d-4c9f-10b4-d708-12ef-a823.ngrok-free.app', "http://127.0.0.1:8001/", "http://10.10.118.82:5173/","http://192.168.1.213:5173/"] // Add the host here
+     allowedHosts: ['bebd-2409-40c0-6d-4c9f-10b4-d708-12ef-a823.ngrok-free.app', "http://127.0.0.1:8001/", "http://10.10.115.66:5173/","http://192.168.1.213:5173/"] // Add the host here
   },
 })

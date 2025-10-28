@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, CheckCircle, ArrowUpCircle, AlertCircle } from 'lucide-react';
+import { CheckCircle, ArrowUpCircle, AlertCircle } from 'lucide-react'; // Removed 'Plus'
 
 // Reusable component for priority badges
 const PriorityBadge = ({ priority }) => {
@@ -49,7 +49,6 @@ export default function FacultyIssueHandlingPage() {
     }
   };
 
-  // --- NEW: Handler for resolving an issue ---
   const handleResolveIssue = async (issueId) => {
     try {
       const response = await fetch(`http://127.0.0.1:8000/api/issues/${issueId}/resolve`, {
@@ -58,7 +57,6 @@ export default function FacultyIssueHandlingPage() {
       if (!response.ok) {
         throw new Error('Failed to resolve issue.');
       }
-      // Update the issue's status in the local state for an instant UI update
       setIssues(issues.map(issue => 
         issue.issue_id === issueId ? { ...issue, status: 'Resolved' } : issue
       ));
@@ -67,7 +65,6 @@ export default function FacultyIssueHandlingPage() {
     }
   };
 
-  // --- NEW: Handler for escalating an issue ---
   const handleEscalateIssue = async (issueId) => {
     try {
       const response = await fetch(`http://127.0.0.1:8000/api/issues/${issueId}/escalate`, {
@@ -77,7 +74,6 @@ export default function FacultyIssueHandlingPage() {
         throw new Error('Failed to escalate issue.');
       }
       const data = await response.json();
-      // Update the issue's priority in the local state
       setIssues(issues.map(issue => 
         issue.issue_id === issueId ? { ...issue, priority: data.priority } : issue
       ));
@@ -86,7 +82,6 @@ export default function FacultyIssueHandlingPage() {
     }
   };
 
-  // Filter issues based on the active tab
   const filteredIssues = issues.filter(issue => {
     if (activeTab === 'Open Issues') return issue.status === 'Open' || issue.status === 'In Progress';
     if (activeTab === 'Resolved Issues') return issue.status === 'Resolved';
@@ -101,10 +96,7 @@ export default function FacultyIssueHandlingPage() {
           <h1 className="text-2xl font-bold">Issue Handling</h1>
           <p className="text-slate-400 text-sm mt-1">Manage and resolve laboratory issues and equipment problems.</p>
         </div>
-        <button className="flex items-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors">
-          <Plus size={18} className="mr-2" />
-          Add Issue Manually
-        </button>
+        {/* --- ADD ISSUE BUTTON REMOVED --- */}
       </div>
 
       {/* Tabs */}
@@ -138,7 +130,6 @@ export default function FacultyIssueHandlingPage() {
                 <PriorityBadge priority={issue.priority} />
                 <StatusBadge status={issue.status} />
                 <div className="flex items-center space-x-2">
-                    {/* ADD onClick handlers to the buttons */}
                     <button 
                         onClick={() => handleResolveIssue(issue.issue_id)}
                         className="flex items-center text-xs bg-green-500/20 hover:bg-green-500/40 text-green-400 py-1.5 px-3 rounded-full transition-colors">

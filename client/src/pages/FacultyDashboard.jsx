@@ -1,13 +1,11 @@
-// src/pages/FacultyDashboard.jsx
-
 import React, { useState, useEffect } from 'react';
 import { 
   AlertTriangle, 
   Activity, 
   TrendingUp, 
   Clock, 
-  ChevronRight,
-  Settings
+  Settings,
+  // ChevronRight // Removed this import
 } from 'lucide-react';
 
 const FacultyDashboard = () => {
@@ -112,7 +110,8 @@ const StatCard = ({ title, value, icon: Icon, theme }) => {
                 <div className={`p-3 rounded-lg ${selectedTheme.iconBg}`}>
                     <Icon className={`w-6 h-6 ${selectedTheme.iconColor}`} />
                 </div>
-                <ChevronRight className="w-5 h-5 text-white/80 group-hover:text-white" />
+                {/* --- REMOVED THE ARROW ICON FROM HERE --- */}
+                {/* <ChevronRight className="w-5 h-5 text-white/80 group-hover:text-white" /> */}
             </div>
             <h3 className="text-white/90 text-sm font-medium uppercase">{title}</h3>
             <p className="text-3xl font-bold">{value ?? 'N/A'}</p>
