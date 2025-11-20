@@ -61,8 +61,8 @@ export default function ProfileSettingsPage() {
   }, []);
 
   const groupAttendanceByMonth = (attendanceDates) => {
-    const labDays = ['Monday', 'Wednesday', 'Thursday'];
-    const months = ['April', 'May', 'June'];
+    const labDays = ['Monday', 'Tuesday', 'Thursday'];
+    const months = ['November', 'December', 'January'];
     const grouped = {};
 
     months.forEach((month) => {
@@ -83,7 +83,7 @@ export default function ProfileSettingsPage() {
     });
 
     months.forEach((month) => {
-      const firstDay = new Date(`2025-${month === 'April' ? '04' : month === 'May' ? '05' : '06'}-01`);
+      const firstDay = new Date(`${month === 'January' ? '2026' : '2025'}-${month === 'November' ? '11' : month === 'December' ? '12' : '01'}-01`);
       const lastDay = new Date(firstDay.getFullYear(), firstDay.getMonth() + 1, 0);
 
       for (let d = firstDay; d <= lastDay; d.setDate(d.getDate() + 1)) {

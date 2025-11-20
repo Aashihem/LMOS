@@ -272,17 +272,8 @@ export default function EquipmentManualsPage() {
                     </td>
                     <td style={{ padding: '0.75rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <button
-                          style={{
-                            color: '#60a5fa',
-                            background: 'none',
-                            border: 'none',
-                            cursor: 'pointer',
-                          }}
-                          title="Download"
-                        >
-                          <Download size={18} />
-                        </button>
+                        
+        
                         <button
                           style={{
                             color: '#60a5fa',
